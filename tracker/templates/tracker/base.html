@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- todo -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- todo -->
+
+    <title>{% block title %}Task Tracker{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'dashboard' %}">Task Tracker</a> |
+            <a href="{% url 'dashboard' %}">Dashboard</a> |
+            <a href="{% url 'add_task' %}">Add Task</a> |
+            <a href="{% url 'categories' %}">Categories</a> |
+            <a href="{% url 'about' %}">About</a>
+        </nav>
+    </header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>
