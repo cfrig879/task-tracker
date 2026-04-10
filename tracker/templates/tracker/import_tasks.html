@@ -1,0 +1,49 @@
+{% extends "tracker/base.html" %}
+{% block title %}Import Tasks • Task Tracker{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1 class="page-title">Import Tasks</h1>
+    <p class="subtext">Upload a CSV to create tasks in bulk.</p>
+  </div>
+
+  <section class="card card--wildflower">
+    <h2>Upload CSV</h2>
+
+    <form class="form" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="field">
+        {{ form.file.label_tag }}
+        {{ form.file }}
+        {% if form.file.errors %}<div class="meta">{{ form.file.errors }}</div>{% endif %}
+      </div>
+
+      <div class="inline" style="margin-top: 12px;">
+        <button class="btn btn-primary" type="submit">Import</button>
+        <a class="btn btn-secondary" href="{% url 'add_task' %}">Back to Add Task</a>
+      </div>
+    </form>
+  </section>
+
+  <section class="card card--forest" style="margin-top: 18px;">
+    <h2>CSV Format</h2>
+    <p class="meta">Required: <strong>title</strong></p>
+    <p class="meta">Optional: due_date (YYYY-MM-DD), category, notes, completed (true/false/1/0)</p>
+
+    <pre class="meta">title,due_date,category,notes,completed
+Pay rent,2026-05-01,Home,Online payment,false
+Write report,2026-04-20,Work,Outline first,true</pre>
+  </section>
+
+  {% if errors %}
+    <section class="card card--earth" style="margin-top: 18px;">
+      <h2>Skipped Row Errors</h2>
+      <ul class="list">
+        {% for e in errors %}
+          <li class="meta">{{ e }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+{% endblock %}

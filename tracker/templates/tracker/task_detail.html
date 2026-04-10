@@ -1,6 +1,76 @@
 {% extends "tracker/base.html" %}
-{% block title %}Task Detail{% endblock %}
+{% block title %}Task Details • Task Tracker{% endblock %}
+{% block nav_dashboard %}aria-current="page"{% endblock %}
+{% block nav_calendar %}aria-current="page"{% endblock %}
+
 {% block content %}
-<h1>Task Detail</h1>
-<p>Placeholder detail for task id: {{ pk }}</p>
+  <div class="hero">
+    <h1 class="page-title">Task Details</h1>
+    <p class="subtext">View details and status for this task.</p>
+  </div>
+
+  <div class="stack">
+    <section class="card card--lake">
+      <h2>Summary</h2>
+
+      <p><strong>Title:</strong> {{ task.title }}</p>
+
+      <p>
+        <strong>Category:</strong>
+        {% if task.category %}
+          <span class="badge lake">{{ task.category.name }}</span>
+        {% else %}
+          <span class="badge">No category</span>
+        {% endif %}
+      </p>
+
+      <p>
+        <strong>Due date:</strong>
+        {% if task.due_date %}
+          <span class="meta">{{ task.due_date }}</span>
+        {% else %}
+          <span class="meta">None</span>
+        {% endif %}
+      </p>
+
+      <p>
+        <strong>Status:</strong>
+        {% if task.completed %}
+          <span class="badge success">Completed</span>
+        {% else %}
+          <span class="badge warning">In progress</span>
+        {% endif %}
+      </p>
+
+      <p>
+        <strong>Time:</strong>
+        {% if task.start_at %}<span class="badge flower">Start {{ task.start_at }}</span>{% else %}<span class="meta">No start time</span>{% endif %}
+        {% if task.end_at %}<span class="badge berry">End {{ task.end_at }}</span>{% endif %}
+      </p>
+
+      <p>
+        <strong>Duration:</strong>
+        {% if task.duration_minutes is not None %}
+          <span class="badge success">{{ task.duration_minutes }} min</span>
+        {% else %}
+          <span class="meta">Not tracked</span>
+        {% endif %}
+      </p>
+      <p><strong>Estimate:</strong> <span class="badge">{{ task.estimated_display }}</span></p>
+      <div class="inline" style="margin-top: 12px;">
+        <a class="btn btn-primary" href="{% url 'add_task' %}">Add another task</a>
+        <a class="btn btn-secondary" href="{% url 'edit_task' task.pk %}">Edit</a>
+        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Back to dashboard</a>
+      </div>
+    </section>
+
+    <section class="card card--earth">
+      <h2>Notes</h2>
+      {% if task.notes %}
+        <p>{{ task.notes }}</p>
+      {% else %}
+        <p class="meta">No notes.</p>
+      {% endif %}
+    </section>
+  </div>
 {% endblock %}

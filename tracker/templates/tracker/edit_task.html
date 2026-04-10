@@ -1,12 +1,11 @@
 {% extends "tracker/base.html" %}
-{% block title %}Add Task • Task Tracker{% endblock %}
-{% block nav_add_task %}aria-current="page"{% endblock %}
-{% block nav_calendar %}aria-current="page"{% endblock %}
+{% block title %}Edit Task • Task Tracker{% endblock %}
+{% block nav_dashboard %}aria-current="page"{% endblock %}
 
 {% block content %}
   <div class="hero">
-    <h1 class="page-title">Add Task</h1>
-    <p class="subtext">Create a new task. Category, due date, and time tracking are optional.</p>
+    <h1 class="page-title">Edit Task</h1>
+    <p class="subtext">Update details for: <strong>{{ task.title }}</strong></p>
   </div>
 
   <section class="card card--wildflower">
@@ -39,6 +38,7 @@
         </div>
       </div>
 
+      {% if form.start_at %}
       <div class="grid-2">
         <div class="field">
           {{ form.start_at.label_tag }}
@@ -52,6 +52,7 @@
           {% if form.end_at.errors %}<div class="meta">{{ form.end_at.errors }}</div>{% endif %}
         </div>
       </div>
+      {% endif %}
 
       <div class="grid-2">
         <div class="field">
@@ -65,7 +66,6 @@
           {{ form.estimated_minutes_part }}
           {% if form.estimated_minutes_part.errors %}<div class="meta">{{ form.estimated_minutes_part.errors }}</div>{% endif %}
         </div>
-        <a class="btn btn-secondary" href="{% url 'import_tasks' %}">Import CSV</a>
       </div>
 
       <div class="field">
@@ -80,8 +80,8 @@
       </div>
 
       <div class="inline" style="margin-top: 12px;">
-        <button class="btn btn-primary" type="submit">Save task</button>
-        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
+        <button class="btn btn-primary" type="submit">Save changes</button>
+        <a class="btn btn-secondary" href="{{ task.get_absolute_url }}">Cancel</a>
       </div>
     </form>
   </section>

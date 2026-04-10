@@ -1,0 +1,33 @@
+{% extends "tracker/base.html" %}
+{% block title %}Edit Category • Task Tracker{% endblock %}
+{% block nav_categories %}aria-current="page"{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1 class="page-title">Edit Category</h1>
+    <p class="subtext">Update the name for: <strong>{{ category.name }}</strong></p>
+  </div>
+
+  <section class="card card--gold">
+    <h2>Category Details</h2>
+
+    <form class="form" method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="meta">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="field">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {% if form.name.errors %}<div class="meta">{{ form.name.errors }}</div>{% endif %}
+      </div>
+
+      <div class="inline" style="margin-top: 12px;">
+        <button class="btn btn-primary" type="submit">Save changes</button>
+        <a class="btn btn-secondary" href="{% url 'categories' %}">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

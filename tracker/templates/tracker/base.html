@@ -1,28 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- todo -->
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- todo -->
-
-    <title>{% block title %}Task Tracker{% endblock %}</title>
+  <head>
     {% load static %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Task Tracker{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
-</head>
-<body>
-    <header>
-        <nav>
-            <a href="{% url 'dashboard' %}">Task Tracker</a> |
-            <a href="{% url 'dashboard' %}">Dashboard</a> |
-            <a href="{% url 'add_task' %}">Add Task</a> |
-            <a href="{% url 'categories' %}">Categories</a> |
-            <a href="{% url 'about' %}">About</a>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{% url 'dashboard' %}">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Task Tracker</span>
+        </a>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="nav-link" href="{% url 'dashboard' %}" {% block nav_dashboard %}{% endblock %}>Dashboard</a>
+          <a class="nav-link" href="{% url 'calendar' %}">Calendar View</a>
+          <a class="nav-link" href="{% url 'add_task' %}" {% block nav_add_task %}{% endblock %}>Add Task</a>
+          <a class="nav-link" href="{% url 'categories' %}" {% block nav_categories %}{% endblock %}>Categories</a>
+          <a class="nav-link" href="{% url 'about' %}" {% block nav_about %}{% endblock %}>About</a>
         </nav>
+      </div>
     </header>
 
-<main>
-    {% block content %}{% endblock %}
-</main>
-</body>
+    <main class="container main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <small>Task Tracker • Django</small>
+      </div>
+    </footer>
+  </body>
 </html>

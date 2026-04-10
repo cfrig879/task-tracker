@@ -1,6 +1,25 @@
 {% extends "tracker/base.html" %}
-{% block title %}About{% endblock %}
+{% block title %}About • Task Tracker{% endblock %}
+{% block nav_about %}aria-current="page"{% endblock %}
+{% block nav_calendar %}aria-current="page"{% endblock %}
+
 {% block content %}
-<h1>About</h1>
-<p>Task Tracker with optional Topic grouping.</p>
+  <h1 class="page-title">About</h1>
+  <p class="subtext">A simple Django task tracker with optional category grouping.</p>
+
+  <section class="card">
+    <h2>Purpose</h2>
+    <p>
+      This project helps users record tasks, view them on a dashboard, and track completion.
+      Categories can be used to group tasks when helpful.
+    </p>
+
+    <h2>Planned Features</h2>
+    <ul class="list">
+      <li>Create tasks with optional category and due date</li>
+      <li>View tasks on a dashboard</li>
+      <li>Mark tasks complete/incomplete</li>
+      <li>Improve usability and design over time</li>
+    </ul>
+  </section>
 {% endblock %}

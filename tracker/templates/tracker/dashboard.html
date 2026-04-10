@@ -1,9 +1,154 @@
 {% extends "tracker/base.html" %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard • Task Tracker{% endblock %}
+{% block nav_dashboard %}aria-current="page"{% endblock %}
+{% block nav_calendar %}aria-current="page"{% endblock %}
+
 {% block content %}
-<h1>Dashboard</h1>
-<p>Week 2 placeholder dashboard.</p>
-<ul>
-  <li><a href="{% url 'task_detail' 1 %}">Example Task #1</a></li>
-</ul>
+  <section class="hero card card--hero">
+  <div class="stack">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="subtext">
+      See what needs attention, what your routine is showing, and where better data will improve your insights.
+    </p>
+    <div class="button-row">
+      <a href="{% url 'add_task' %}" class="btn btn-primary">Add task</a>
+      <a href="#" class="btn btn-secondary">Quick log</a>
+    </div>
+  </div>
+  </section>
+
+  <section class="grid-3">
+    <article class="card">
+      <h2>Needs attention</h2>
+      <ul class="stack">
+        <li><a href="#">2 overdue tasks</a></li>
+        <li><a href="#">3 due today</a></li>
+        <li><a href="#">4 tasks missing estimates</a></li>
+        <li><a href="#">2 completed tasks missing actual duration</a></li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Today / next up</h2>
+      <ul class="stack">
+        <li><strong>9:00 AM</strong> Draft proposal</li>
+        <li><strong>12:00 PM</strong> Lunch</li>
+        <li><strong>2:00 PM</strong> Admin catch-up</li>
+        <li><strong>Due today:</strong> Send invoice</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h2>Today / next up</h2>
+      <ul class="stack">
+        <li><strong>9:00 AM</strong> Draft proposal</li>
+        <li><strong>12:00 PM</strong> Lunch</li>
+        <li><strong>2:00 PM</strong> Admin catch-up</li>
+        <li><strong>Due today:</strong> Send invoice</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="grid-2">
+    <article class="card card--insight">
+      <h2>This week’s signals</h2>
+      <ul class="stack">
+        <li>You underestimated 5 tasks this week.</li>
+        <li>Admin work took 2.3× longer than planned.</li>
+        <li>Late-day tasks were more likely to run over.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Improve your insights</h2>
+      <ul class="stack">
+        <li>6 entries are missing estimates.</li>
+        <li>4 completed entries have no actual duration.</li>
+        <li>3 entries are uncategorized.</li>
+        <li>Only 48% of recent entries are detailed enough for strong analysis.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="grid-2">
+    <article class="card">
+      <h2>Week at a glance</h2>
+      <div class="stats-grid">
+        <div><span class="stat-label">Completed</span><strong>14</strong></div>
+        <div><span class="stat-label">Planned</span><strong>11h 30m</strong></div>
+        <div><span class="stat-label">Actual</span><strong>17h 10m</strong></div>
+        <div><span class="stat-label">Largest overrun</span><strong>Admin</strong></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>Recent activity</h2>
+      <ul class="stack">
+        <li>Completed “Grocery run”</li>
+        <li>Edited “Budget review”</li>
+        <li>Added category “Exercise”</li>
+        <li>Imported 8 entries</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="card card--feature">
+    <h2>Routine review</h2>
+    <p class="subtext">
+      Over time, this space can highlight patterns between your plans, actual time, and routine habits to help you reduce stress and plan more realistically.
+    </p>
+  </section>
+
+
+
+
+
+<!--  <div class="grid-2">-->
+<!--    <section class="card card&#45;&#45;forest">-->
+<!--      <h2>Categories</h2>-->
+
+<!--      <ul class="list">-->
+<!--        {% for c in categories %}-->
+<!--          <li>{{ c.name }}</li>-->
+<!--        {% empty %}-->
+<!--          <li class="meta">No categories yet.</li>-->
+<!--        {% endfor %}-->
+<!--      </ul>-->
+
+<!--      <div class="inline" style="margin-top: 12px;">-->
+<!--        <a class="btn btn-secondary" href="{% url 'categories' %}">View categories</a>-->
+<!--      </div>-->
+<!--    </section>-->
+
+<!--    <section class="card card&#45;&#45;lake">-->
+<!--      <h2>Tasks</h2>-->
+
+<!--      <ul class="list">-->
+<!--        {% for task in tasks %}-->
+<!--          <li>-->
+<!--            <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>-->
+
+<!--            {% if task.category %}-->
+<!--              <span class="badge lake">{{ task.category.name }}</span>-->
+<!--            {% else %}-->
+<!--              <span class="badge">No category</span>-->
+<!--            {% endif %}-->
+
+<!--            {% if task.completed %}-->
+<!--              <span class="badge success">Completed</span>-->
+<!--            {% endif %}-->
+
+<!--            {% if task.due_date %}-->
+<!--              <span class="meta">• due {{ task.due_date }}</span>-->
+<!--            {% endif %}-->
+<!--          </li>-->
+<!--        {% empty %}-->
+<!--          <li class="meta">No tasks yet. Add one to get started.</li>-->
+<!--        {% endfor %}-->
+<!--      </ul>-->
+
+<!--      <div class="inline" style="margin-top: 12px;">-->
+<!--        <a class="btn btn-primary" href="{% url 'add_task' %}">Add a task</a>-->
+<!--      </div>-->
+<!--    </section>-->
+<!--  </div>-->
 {% endblock %}

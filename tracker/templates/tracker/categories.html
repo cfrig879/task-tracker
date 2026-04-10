@@ -1,6 +1,62 @@
 {% extends "tracker/base.html" %}
-{% block title %}Categories{% endblock %}
+{% block title %}Categories • Task Tracker{% endblock %}
+{% block nav_categories %}aria-current="page"{% endblock %}
+{% block nav_calendar %}aria-current="page"{% endblock %}
+
 {% block content %}
-<h1>Categories</h1>
-<p>Week 2 placeholder categories page.</p>
+  <div class="hero">
+    <h1 class="page-title">Categories</h1>
+    <p class="subtext">Create categories to group tasks. Categories are optional.</p>
+  </div>
+
+  <div class="grid-2">
+    <section class="card card--wildflower">
+      <h2>Add Category</h2>
+
+      <form class="form" method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="meta">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="field">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {% if form.name.errors %}<div class="meta">{{ form.name.errors }}</div>{% endif %}
+        </div>
+
+        <div class="inline" style="margin-top: 12px;">
+          <button class="btn btn-primary" type="submit">Add category</button>
+          <a class="btn btn-secondary" href="{% url 'dashboard' %}">Back</a>
+        </div>
+
+        <p class="meta" style="margin-top: 10px;">
+          Tip: keep category names short (e.g., Work, Home, Personal).
+        </p>
+      </form>
+    </section>
+
+    <section class="card card--forest">
+      <h2>Category List</h2>
+
+      <ul class="list">
+        {% for c in categories %}
+          <li>
+            <strong>{{ c.name }}</strong>
+            <span class="badge">{{ c.task_count }} tasks</span>
+            <span class="meta">•</span>
+            <a href="{% url 'edit_category' c.pk %}">Edit</a>
+          </li>
+        {% empty %}
+          <li class="meta">No categories yet.</li>
+        {% endfor %}
+
+        <li>
+          <strong>No category</strong>
+          <span class="badge warning">{{ uncategorized_count }} tasks</span>
+        </li>
+      </ul>
+    </section>
+  </div>
 {% endblock %}

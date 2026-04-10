@@ -1,0 +1,55 @@
+{% extends "tracker/base.html" %}
+{% load tracker_extras %}
+{% block nav_calendar %}aria-current="page"{% endblock %}
+{% block title %}Calendar • Task Tracker{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1 class="page-title">Calendar</h1>
+    <p class="subtext">Tasks appear on their due dates.</p>
+  </div>
+
+  <section class="card card--lake">
+    <div class="inline" style="justify-content: space-between; margin-bottom: 12px;">
+      <a class="btn btn-secondary" href="?year={{ prev_year }}&month={{ prev_month }}">← Prev</a>
+
+      <div>
+        <strong>{{ month_name }} {{ year }}</strong>
+      </div>
+
+      <a class="btn btn-secondary" href="?year={{ next_year }}&month={{ next_month }}">Next →</a>
+    </div>
+
+    <div class="calendar-grid">
+      <div class="calendar-dow">Sun</div>
+      <div class="calendar-dow">Mon</div>
+      <div class="calendar-dow">Tue</div>
+      <div class="calendar-dow">Wed</div>
+      <div class="calendar-dow">Thu</div>
+      <div class="calendar-dow">Fri</div>
+      <div class="calendar-dow">Sat</div>
+
+      {% for week in weeks %}
+        {% for day in week %}
+          {% with day_tasks=tasks_by_day|get_item:day %}
+          <div class="calendar-day
+                      {% if day.month != month %}is-outside{% endif %}
+                      {% if day == today %}is-today{% endif %}">
+            <div class="calendar-daynum">{{ day.day }}</div>
+
+            {% if day_tasks %}
+              <div class="calendar-tasks">
+                {% for task in day_tasks %}
+                  <a class="calendar-task {{ task.category|category_class }}" href="{{ task.get_absolute_url }}">
+                    {{ task.title }}
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          {% endwith %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
