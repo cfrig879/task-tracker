@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "tracker/base.html" %}
+
+{% block title %}Cadence{% endblock %}
+{% block nav_home %}aria-current="page"{% endblock %}
+{% block content %}
+<section class="hero card card--hero">
+  <div class="stack">
+    <h1 class="page-title">Cadence</h1>
+    <p class="subtext">
+      A calmer way to track tasks, routines, and time patterns so you can understand how you actually work.
+    </p>
+    <p class="subtext">
+      Cadence helps you log tasks and routines over time, compare your plans to what actually happens, and spot patterns that affect productivity and stress.
+    </p>
+
+    <div class="button-row">
+      <a href="{% url 'signup' %}" class="btn btn-primary">Create account</a>
+      <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
+      <a href="{% url 'dashboard' %}" class="btn btn-secondary">Try demo</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid-3">
+  <article class="card">
+    <h2>Track your routine</h2>
+    <p class="subtext">
+      Log tasks, timing, categories, and notes in one place.
+    </p>
+  </article>
+
+  <article class="card">
+    <h2>Spot patterns over time</h2>
+    <p class="subtext">
+      Notice where you underestimate, what causes stress, and where your schedule drifts.
+    </p>
+  </article>
+
+  <article class="card">
+    <h2>Improve how you plan</h2>
+    <p class="subtext">
+      Turn day-to-day data into better decisions and more realistic routines.
+    </p>
+  </article>
+</section>
+
+<section class="card card--feature">
+  <h2>Why Cadence feels different</h2>
+  <p class="subtext">
+    Cadence is not just a place to store tasks. It is designed to help you compare intention to reality, understand how your routine actually works, and find calmer ways to improve it.
+  </p>
+</section>
+{% endblock %}

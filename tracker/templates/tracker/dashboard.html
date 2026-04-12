@@ -1,10 +1,11 @@
+{# tracker/templates/tracker/dashboard.html #}
 {% extends "tracker/base.html" %}
+
 {% block title %}Dashboard • Task Tracker{% endblock %}
 {% block nav_dashboard %}aria-current="page"{% endblock %}
-{% block nav_calendar %}aria-current="page"{% endblock %}
 
 {% block content %}
-  <section class="hero card card--hero">
+<section class="hero card card--hero">
   <div class="stack">
     <h1 class="page-title">Dashboard</h1>
     <p class="subtext">
@@ -12,143 +13,254 @@
     </p>
     <div class="button-row">
       <a href="{% url 'add_task' %}" class="btn btn-primary">Add task</a>
-      <a href="#" class="btn btn-secondary">Quick log</a>
+      <a href="{% url 'import_tasks' %}" class="btn btn-secondary">Import CSV</a>
+      <a href="{% url 'categories' %}" class="btn btn-secondary">Manage categories</a>
     </div>
   </div>
-  </section>
+</section>
 
-  <section class="grid-3">
-    <article class="card">
-      <h2>Needs attention</h2>
-      <ul class="stack">
-        <li><a href="#">2 overdue tasks</a></li>
-        <li><a href="#">3 due today</a></li>
-        <li><a href="#">4 tasks missing estimates</a></li>
-        <li><a href="#">2 completed tasks missing actual duration</a></li>
-      </ul>
-    </article>
+<section class="grid-3">
+  <article class="card">
+    <h2>Needs attention</h2>
+    <div class="stack">
+      <a href="#overdue-section" class="dashboard-link-row">
+        <span>Overdue</span>
+        <strong>{{ overdue_count }}</strong>
+      </a>
+      <a href="#today-section" class="dashboard-link-row">
+        <span>Due today</span>
+        <strong>{{ due_today_count }}</strong>
+      </a>
+      <a href="#insight-quality-section" class="dashboard-link-row">
+        <span>Missing estimates</span>
+        <strong>{{ missing_estimate_count }}</strong>
+      </a>
+      <a href="#insight-quality-section" class="dashboard-link-row">
+        <span>Missing actual duration</span>
+        <strong>{{ missing_actual_duration_count }}</strong>
+      </a>
+      <a href="#insight-quality-section" class="dashboard-link-row">
+        <span>Uncategorized</span>
+        <strong>{{ uncategorized_count }}</strong>
+      </a>
+    </div>
+  </article>
 
-    <article class="card">
-      <h2>Today / next up</h2>
-      <ul class="stack">
-        <li><strong>9:00 AM</strong> Draft proposal</li>
-        <li><strong>12:00 PM</strong> Lunch</li>
-        <li><strong>2:00 PM</strong> Admin catch-up</li>
-        <li><strong>Due today:</strong> Send invoice</li>
-      </ul>
-    </article>
-    <article class="card">
-      <h2>Today / next up</h2>
-      <ul class="stack">
-        <li><strong>9:00 AM</strong> Draft proposal</li>
-        <li><strong>12:00 PM</strong> Lunch</li>
-        <li><strong>2:00 PM</strong> Admin catch-up</li>
-        <li><strong>Due today:</strong> Send invoice</li>
-      </ul>
-    </article>
-  </section>
+  <article class="card" id="today-section">
+    <h2>Today / next up</h2>
 
-  <section class="grid-2">
-    <article class="card card--insight">
-      <h2>This week’s signals</h2>
-      <ul class="stack">
-        <li>You underestimated 5 tasks this week.</li>
-        <li>Admin work took 2.3× longer than planned.</li>
-        <li>Late-day tasks were more likely to run over.</li>
-      </ul>
-    </article>
+    {% if today_tasks %}
+      <div class="stack">
+        {% for task in today_tasks %}
+          <a href="{{ task.get_absolute_url }}" class="task-row">
+            <div class="stack stack--tight">
+              <strong>{{ task.title }}</strong>
+              <div class="subtext">
+                {% if task.start_at %}
+                  {{ task.start_at|date:"g:i A" }}
+                {% elif task.due_date %}
+                  Due today
+                {% else %}
+                  Upcoming
+                {% endif %}
+                {% if task.category %}
+                  · {{ task.category.name }}
+                {% endif %}
+              </div>
+            </div>
 
-    <article class="card">
-      <h2>Improve your insights</h2>
-      <ul class="stack">
-        <li>6 entries are missing estimates.</li>
-        <li>4 completed entries have no actual duration.</li>
-        <li>3 entries are uncategorized.</li>
-        <li>Only 48% of recent entries are detailed enough for strong analysis.</li>
-      </ul>
-    </article>
-  </section>
-
-  <section class="grid-2">
-    <article class="card">
-      <h2>Week at a glance</h2>
-      <div class="stats-grid">
-        <div><span class="stat-label">Completed</span><strong>14</strong></div>
-        <div><span class="stat-label">Planned</span><strong>11h 30m</strong></div>
-        <div><span class="stat-label">Actual</span><strong>17h 10m</strong></div>
-        <div><span class="stat-label">Largest overrun</span><strong>Admin</strong></div>
+            {% if task.completed %}
+              <span class="badge">Done</span>
+            {% else %}
+              <span class="badge">Open</span>
+            {% endif %}
+          </a>
+        {% endfor %}
       </div>
-    </article>
+    {% else %}
+      <p class="subtext">Nothing scheduled or due today.</p>
+    {% endif %}
 
-    <article class="card">
-      <h2>Recent activity</h2>
+    {% if next_up_tasks %}
+      <div class="stack mt-3">
+        <span class="section-label">Coming up</span>
+        {% for task in next_up_tasks %}
+          <a href="{{ task.get_absolute_url }}" class="task-row">
+            <div class="stack stack--tight">
+              <strong>{{ task.title }}</strong>
+              <div class="subtext">
+                {% if task.start_at %}
+                  {{ task.start_at|date:"M j, g:i A" }}
+                {% elif task.due_date %}
+                  Due {{ task.due_date|date:"M j" }}
+                {% else %}
+                  Upcoming
+                {% endif %}
+                {% if task.category %}
+                  · {{ task.category.name }}
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </article>
+
+  <article class="card">
+    <h2>Quick capture</h2>
+    <div class="stack">
+      <a href="{% url 'add_task' %}" class="btn btn-primary">Add task</a>
+      <a href="{% url 'calendar' %}" class="btn btn-secondary">Open calendar</a>
+      <a href="{% url 'import_tasks' %}" class="btn btn-secondary">Import entries</a>
+      <a href="{% url 'download_import_template' %}" class="btn btn-secondary">Download template</a>
+      <span class="subtext">Routine logging can live here later without redesigning the page.</span>
+    </div>
+  </article>
+</section>
+
+<section class="grid-2 mt-4">
+  <article class="card card--insight">
+    <h2>This week’s signals</h2>
+
+    {% if weekly_signals %}
       <ul class="stack">
-        <li>Completed “Grocery run”</li>
-        <li>Edited “Budget review”</li>
-        <li>Added category “Exercise”</li>
-        <li>Imported 8 entries</li>
+        {% for signal in weekly_signals %}
+          <li>{{ signal }}</li>
+        {% endfor %}
       </ul>
-    </article>
-  </section>
+    {% else %}
+      <p class="subtext">
+        Log a little more timing and estimate detail to unlock stronger insights here.
+      </p>
+    {% endif %}
+  </article>
 
-  <section class="card card--feature">
-    <h2>Routine review</h2>
-    <p class="subtext">
-      Over time, this space can highlight patterns between your plans, actual time, and routine habits to help you reduce stress and plan more realistically.
-    </p>
-  </section>
+  <article class="card" id="insight-quality-section">
+    <h2>Improve your insights</h2>
+    <ul class="stack">
+      <li>{{ missing_estimate_count }} task{{ missing_estimate_count|pluralize }} missing estimates.</li>
+      <li>{{ missing_actual_duration_count }} completed task{{ missing_actual_duration_count|pluralize }} missing actual duration.</li>
+      <li>{{ uncategorized_count }} uncategorized task{{ uncategorized_count|pluralize }}.</li>
+      <li>{{ insight_completion_percent }}% of recent entries have enough detail for stronger analysis.</li>
+    </ul>
+  </article>
+</section>
 
+<section class="grid-2 mt-4">
+  <article class="card">
+    <h2>Week at a glance</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Completed</span>
+        <strong>{{ completed_this_week_count }}</strong>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Planned</span>
+        <strong>{{ planned_this_week_display }}</strong>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Actual</span>
+        <strong>{{ actual_this_week_display }}</strong>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Largest overrun</span>
+        <strong>{{ largest_overrun_category_name }}</strong>
+      </div>
+    </div>
+  </article>
 
+  <article class="card">
+    <h2>Recent activity</h2>
 
+    {% if recent_activity_tasks %}
+      <div class="stack">
+        {% for task in recent_activity_tasks %}
+          <a href="{{ task.get_absolute_url }}" class="task-row">
+            <div class="stack stack--tight">
+              <strong>{{ task.title }}</strong>
+              <div class="subtext">
+                Updated {{ task.updated_at|date:"M j, g:i A" }}
+                {% if task.category %}
+                  · {{ task.category.name }}
+                {% endif %}
+              </div>
+            </div>
 
+            {% if task.completed %}
+              <span class="badge">Done</span>
+            {% else %}
+              <span class="badge">Updated</span>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="subtext">No recent activity yet.</p>
+    {% endif %}
+  </article>
+</section>
 
-<!--  <div class="grid-2">-->
-<!--    <section class="card card&#45;&#45;forest">-->
-<!--      <h2>Categories</h2>-->
+<section class="grid-2 mt-4">
+  <article class="card" id="overdue-section">
+    <h2>Overdue</h2>
 
-<!--      <ul class="list">-->
-<!--        {% for c in categories %}-->
-<!--          <li>{{ c.name }}</li>-->
-<!--        {% empty %}-->
-<!--          <li class="meta">No categories yet.</li>-->
-<!--        {% endfor %}-->
-<!--      </ul>-->
+    {% if overdue_tasks %}
+      <div class="stack">
+        {% for task in overdue_tasks %}
+          <a href="{{ task.get_absolute_url }}" class="task-row">
+            <div class="stack stack--tight">
+              <strong>{{ task.title }}</strong>
+              <div class="subtext">
+                Due {{ task.due_date|date:"M j" }}
+                {% if task.category %}
+                  · {{ task.category.name }}
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="subtext">No overdue tasks.</p>
+    {% endif %}
+  </article>
 
-<!--      <div class="inline" style="margin-top: 12px;">-->
-<!--        <a class="btn btn-secondary" href="{% url 'categories' %}">View categories</a>-->
-<!--      </div>-->
-<!--    </section>-->
+  <article class="card">
+    <h2>Upcoming</h2>
 
-<!--    <section class="card card&#45;&#45;lake">-->
-<!--      <h2>Tasks</h2>-->
+    {% if upcoming_tasks %}
+      <div class="stack">
+        {% for task in upcoming_tasks %}
+          <a href="{{ task.get_absolute_url }}" class="task-row">
+            <div class="stack stack--tight">
+              <strong>{{ task.title }}</strong>
+              <div class="subtext">
+                {% if task.start_at %}
+                  {{ task.start_at|date:"M j, g:i A" }}
+                {% elif task.due_date %}
+                  Due {{ task.due_date|date:"M j" }}
+                {% else %}
+                  No date set
+                {% endif %}
+                {% if task.category %}
+                  · {{ task.category.name }}
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="subtext">No upcoming tasks.</p>
+    {% endif %}
+  </article>
+</section>
 
-<!--      <ul class="list">-->
-<!--        {% for task in tasks %}-->
-<!--          <li>-->
-<!--            <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>-->
-
-<!--            {% if task.category %}-->
-<!--              <span class="badge lake">{{ task.category.name }}</span>-->
-<!--            {% else %}-->
-<!--              <span class="badge">No category</span>-->
-<!--            {% endif %}-->
-
-<!--            {% if task.completed %}-->
-<!--              <span class="badge success">Completed</span>-->
-<!--            {% endif %}-->
-
-<!--            {% if task.due_date %}-->
-<!--              <span class="meta">• due {{ task.due_date }}</span>-->
-<!--            {% endif %}-->
-<!--          </li>-->
-<!--        {% empty %}-->
-<!--          <li class="meta">No tasks yet. Add one to get started.</li>-->
-<!--        {% endfor %}-->
-<!--      </ul>-->
-
-<!--      <div class="inline" style="margin-top: 12px;">-->
-<!--        <a class="btn btn-primary" href="{% url 'add_task' %}">Add a task</a>-->
-<!--      </div>-->
-<!--    </section>-->
-<!--  </div>-->
+<section class="card mt-4">
+  <h2>Routine review</h2>
+  <p class="subtext">
+    Over time, this space can highlight patterns between your plans, actual time, and routine habits to help you reduce stress and plan more realistically.
+  </p>
+</section>
 {% endblock %}
