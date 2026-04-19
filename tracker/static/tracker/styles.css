@@ -581,195 +581,209 @@ code {
 }
 
 @media (max-width: 760px) {
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
 
-  .header-inner {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0;
-    position: relative;
-  }
+    .header-inner {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        position: relative;
+    }
 
-  .nav-toggle {
-    display: inline-flex;
-    grid-column: 1;
-    grid-row: 1;
-    margin-left: 0;
-  }
+    .nav-toggle {
+        display: inline-flex;
+        grid-column: 1;
+        grid-row: 1;
+        margin-left: 0;
+    }
 
-  .brand {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: start;
-  }
+    .brand {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: start;
+    }
 
-  .brand-logo {
-    height: 32px;
-  }
+    .brand-logo {
+        height: 32px;
+    }
 
-  .nav {
-    display: none;
-    grid-column: 1 / -1;
-    width: 100%;
-    margin-top: 0.5rem;
-    padding: 0.75rem;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(12px);
-  }
+    .nav {
+        display: none;
+        grid-column: 1 / -1;
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+    }
 
-  .nav.nav--open {
-    display: grid;
-  }
+    .nav.nav--open {
+        display: grid;
+    }
 
-  .nav-link {
-    width: 100%;
-    justify-content: flex-start;
-    min-height: 40px;
-    padding: 0.65rem 0.9rem;
-    background: rgba(255, 255, 255, 0.72);
-  }
+    .nav-link {
+        width: 100%;
+        justify-content: flex-start;
+        min-height: 40px;
+        padding: 0.65rem 0.9rem;
+        background: rgba(255, 255, 255, 0.72);
+    }
 
-  .grid-2,
-  .stats-grid,
-  .calendar-grid {
-    grid-template-columns: 1fr;
-  }
+    .nav-inline-form {
+        margin: 0;
+    }
 
-  .detail-row {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
-  }
+    .nav-link-button {
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+    }
 
-  .container {
-    width: min(100% - 1rem, 1120px);
-  }
+    .grid-2,
+    .stats-grid,
+    .calendar-grid {
+        grid-template-columns: 1fr;
+    }
 
-  .card {
-    padding: 1rem;
-  }
+    .detail-row {
+        grid-template-columns: 1fr;
+        gap: 0.35rem;
+    }
 
-  .main,
-  main {
-    padding-bottom: 2rem;
-  }
+    .container {
+        width: min(100% - 1rem, 1120px);
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .main,
+    main {
+        padding-bottom: 2rem;
+    }
 }
 
 @media (min-width: 761px) {
-  .nav {
-    display: flex !important;
-  }
+    .nav {
+        display: flex !important;
+    }
 }
 
 .calendar-toolbar {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .calendar-toolbar-title {
-  text-align: center;
-  font-size: 1.4rem;
-  line-height: 1.2;
+    text-align: center;
+    font-size: 1.4rem;
+    line-height: 1.2;
 }
 
 .calendar-desktop {
-  display: block;
+    display: block;
 }
 
 .calendar-mobile {
-  display: none;
+    display: none;
 }
 
 .calendar-mobile-list {
-  display: grid;
-  gap: 0.85rem;
+    display: grid;
+    gap: 0.85rem;
 }
 
 .calendar-mobile-day {
-  padding: 1rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid var(--border);
+    padding: 1rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border);
 }
 
 .calendar-mobile-day-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .calendar-mobile-weekday {
-  font-weight: 800;
-  letter-spacing: 0.02em;
+    font-weight: 800;
+    letter-spacing: 0.02em;
 }
 
 .calendar-mobile-date {
-  color: var(--text-soft);
-  font-weight: 600;
+    color: var(--text-soft);
+    font-weight: 600;
 }
 
 .calendar-mobile-tasks {
-  display: grid;
-  gap: 0.5rem;
+    display: grid;
+    gap: 0.5rem;
 }
 
 .calendar-day.is-outside {
-  opacity: 0.45;
+    opacity: 0.45;
 }
 
 .calendar-day.is-today,
 .calendar-mobile-day.is-today {
-  border-color: rgba(68, 116, 154, 0.35);
-  box-shadow: 0 0 0 2px rgba(68, 116, 154, 0.08);
+    border-color: rgba(68, 116, 154, 0.35);
+    box-shadow: 0 0 0 2px rgba(68, 116, 154, 0.08);
 }
 
 .calendar-daynum {
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
 .calendar-tasks {
-  display: grid;
-  gap: 0.4rem;
+    display: grid;
+    gap: 0.4rem;
 }
 
 @media (max-width: 760px) {
-  .calendar-toolbar {
-    grid-template-columns: auto 1fr auto;
-    gap: 0.5rem;
-  }
+    .calendar-toolbar {
+        grid-template-columns: auto 1fr auto;
+        gap: 0.5rem;
+    }
 
-  .calendar-toolbar .btn {
-    min-height: 38px;
-    padding: 0.55rem 0.75rem;
-  }
+    .calendar-toolbar .btn {
+        min-height: 38px;
+        padding: 0.55rem 0.75rem;
+    }
 
-  .calendar-toolbar-title {
-    font-size: 1.15rem;
-  }
+    .calendar-toolbar-title {
+        font-size: 1.15rem;
+    }
 
-  .calendar-desktop {
-    display: none;
-  }
+    .calendar-desktop {
+        display: none;
+    }
 
-  .calendar-mobile {
-    display: block;
-  }
+    .calendar-mobile {
+        display: block;
+    }
 }
 
 .task-meta-row {

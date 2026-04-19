@@ -1,25 +1,43 @@
 from datetime import datetime, timedelta
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=60, unique=True)
+    user = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="categories",
+    )
+    name = models.CharField(max_length=60)
+
+    class Meta:
+        unique_together = ("user", "name")
 
     def __str__(self) -> str:
         return str(self.name)
 
 
 class Task(models.Model):
+    user = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="tasks",
+    )
     title = models.CharField(max_length=120)
     category = models.ForeignKey(
         Category,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name="task",
+        related_name="tasks",
     )
     due_date = models.DateField(null=True, blank=True)
     notes = models.TextField(blank=True)

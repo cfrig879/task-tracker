@@ -2,13 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38c32115-552d-4773-8cee-6b7ffa845f5a" name="Changes" comment="Functional Deeper Dev Milestone 1">
+      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/signup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/task_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/static/tracker/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/static/tracker/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/task_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/task_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +113,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776025100425</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Functional Deeper Dev Milestone 1">
+      <option name="closed" value="true" />
+      <created>1776625648024</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1776625648024</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

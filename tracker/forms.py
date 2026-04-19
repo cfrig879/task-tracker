@@ -1,6 +1,15 @@
 from django import forms
-from .models import Task
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import Category, Task
 
+
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(required=False)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")
 
 class TaskForm(forms.ModelForm):
     estimated_hours = forms.IntegerField(
@@ -17,9 +26,15 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        # IMPORTANT: exclude estimated_minutes from the visible fields
-        fields = ["title", "category", "due_date",
-                  "start_at", "end_at", "notes", "completed"]
+        fields = [
+            "title",
+            "category",
+            "due_date",
+            "start_at",
+            "end_at",
+            "notes",
+            "completed",
+        ]
         widgets = {
             "due_date": forms.DateInput(attrs={"type": "date"}),
             "start_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
@@ -27,10 +42,14 @@ class TaskForm(forms.ModelForm):
             "notes": forms.Textarea(attrs={"rows": 4}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # If editing an existing task, prefill hours/minutes from estimated_minutes
+        if user is not None:
+            self.fields["category"].queryset = Category.objects.filter(user=user).order_by("name")
+        else:
+            self.fields["category"].queryset = Category.objects.none()
+
         if self.instance and self.instance.pk and self.instance.estimated_minutes is not None:
             total = int(self.instance.estimated_minutes)
             self.fields["estimated_hours"].initial = total // 60
@@ -42,13 +61,10 @@ class TaskForm(forms.ModelForm):
         hours = cleaned.get("estimated_hours")
         minutes = cleaned.get("estimated_minutes_part")
 
-        # Treat blank as 0
         hours = 0 if hours in (None, "") else int(hours)
         minutes = 0 if minutes in (None, "") else int(minutes)
 
         total = hours * 60 + minutes
-
-        # If both left blank/0, store NULL (keeps DB tidy)
         cleaned["estimated_minutes_total"] = total if total > 0 else None
         return cleaned
 

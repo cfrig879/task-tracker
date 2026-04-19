@@ -13,33 +13,56 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+
 from .category_forms import CategoryForm
-from .forms import TaskForm
+from .forms import SignUpForm, TaskForm
 from .import_forms import TaskImportForm
 from .models import Category, Task
+
+
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import TaskForm, SignUpForm
 
 def landing(request):
     return render(request, "tracker/landing.html")
 
-def login_coming_soon(request):
-    context = {
-        "title": "Sign in is coming soon",
-        "message": (
-            "Cadence will eventually support personal accounts so users can save "
-            "their routines, view long-term patterns, and receive individualized insights."
-        ),
-    }
-    return render(request, "tracker/coming_soon.html", context)
+# def login_coming_soon(request):
+#     context = {
+#         "title": "Sign in is coming soon",
+#         "message": (
+#             "Cadence will eventually support personal accounts so users can save "
+#             "their routines, view long-term patterns, and receive individualized insights."
+#         ),
+#     }
+#     return render(request, "tracker/coming_soon.html", context)
 
-def signup_coming_soon(request):
-    context = {
-        "title": "Account creation is coming soon",
-        "message": (
-            "Cadence will eventually support personal accounts so users can build "
-            "their own history, routines, and personalized planning insights over time."
-        ),
-    }
-    return render(request, "tracker/coming_soon.html", context)
+# def signup_coming_soon(request):
+#     context = {
+#         "title": "Account creation is coming soon",
+#         "message": (
+#             "Cadence will eventually support personal accounts so users can build "
+#             "their own history, routines, and personalized planning insights over time."
+#         ),
+#     }
+#     return render(request, "tracker/coming_soon.html", context)
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Your account has been created.")
+            return redirect("dashboard")
+    else:
+        form = SignUpForm()
+
+    return render(request, "tracker/signup.html", {"form": form})
+
 
 def download_import_template(request):
     file_path = Path(settings.BASE_DIR) / "tracker" / "static" / "tracker" / "task_import_template.xlsx"
@@ -75,7 +98,22 @@ def _parse_csv_date(value: str) -> date | None:
     raw = (value or "").strip()
     if not raw:
         return None
-    return datetime.strptime(raw, "%Y-%m-%d").date()
+
+    formats = (
+        "%Y-%m-%d",
+        "%m/%d/%Y",
+        "%m/%d/%y",
+    )
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(raw, fmt).date()
+        except ValueError:
+            continue
+
+    raise ValueError(
+        f"invalid date '{raw}' (use YYYY-MM-DD or M/D/YYYY)"
+    )
 
 
 def _parse_csv_datetime(value: str) -> datetime | None:
@@ -88,6 +126,16 @@ def _parse_csv_datetime(value: str) -> datetime | None:
         "%Y-%m-%dT%H:%M",
         "%Y-%m-%d %H:%M:%S",
         "%Y-%m-%dT%H:%M:%S",
+        "%m/%d/%Y %H:%M",
+        "%m/%d/%Y %I:%M",
+        "%m/%d/%Y %I:%M %p",
+        "%m/%d/%Y %H:%M:%S",
+        "%m/%d/%Y %I:%M:%S %p",
+        "%m/%d/%y %H:%M",
+        "%m/%d/%y %I:%M",
+        "%m/%d/%y %I:%M %p",
+        "%m/%d/%y %H:%M:%S",
+        "%m/%d/%y %I:%M:%S %p",
     )
 
     parsed: datetime | None = None
@@ -101,7 +149,7 @@ def _parse_csv_datetime(value: str) -> datetime | None:
     if parsed is None:
         raise ValueError(
             f"invalid datetime '{raw}' "
-            f"(use YYYY-MM-DD HH:MM or YYYY-MM-DDTHH:MM)"
+            f"(use YYYY-MM-DD HH:MM, YYYY-MM-DDTHH:MM, or spreadsheet-style dates)"
         )
 
     if settings.USE_TZ and timezone.is_naive(parsed):
@@ -124,14 +172,14 @@ def _parse_estimated_minutes(row: dict[str, str]) -> int | None:
     total = hours * 60 + minutes
     return total if total > 0 else None
 
-
+@login_required
 def dashboard(request):
     now = timezone.localtime()
     today = now.date()
     week_start = today - timedelta(days=today.weekday())
     week_end = week_start + timedelta(days=6)
 
-    base_qs = Task.objects.select_related("category")
+    base_qs = Task.objects.filter(user=request.user).select_related("category")
 
     overdue_tasks = list(
         base_qs.filter(
@@ -295,57 +343,75 @@ def dashboard(request):
     }
     return render(request, "tracker/dashboard.html", context)
 
-
+@login_required
 def add_task(request):
     if request.method == "POST":
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, user=request.user)
         if form.is_valid():
-            task = form.save()
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            form.save_m2m()
             return redirect(task)
     else:
-        form = TaskForm()
+        form = TaskForm(user=request.user)
 
     return render(request, "tracker/add_task.html", {"form": form})
 
-
+@login_required
 def task_detail(request, pk: int):
-    task = get_object_or_404(Task.objects.select_related("category"), pk=pk)
+    task = get_object_or_404(
+        Task.objects.filter(user=request.user).select_related("category"),
+        pk=pk,
+    )
     return render(request, "tracker/task_detail.html", {"task": task})
 
-
+@login_required
 def edit_task(request, pk: int):
-    task = get_object_or_404(Task, pk=pk)
+    task = get_object_or_404(Task, pk=pk, user=request.user)
 
     if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.POST, instance=task, user=request.user)
         if form.is_valid():
-            task = form.save()
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            form.save_m2m()
             return redirect(task)
     else:
-        form = TaskForm(instance=task)
+        form = TaskForm(instance=task, user=request.user)
 
     return render(request, "tracker/edit_task.html", {"form": form, "task": task})
 
-
+@login_required
 @require_POST
 def toggle_task_complete(request, pk: int):
-    task = get_object_or_404(Task, pk=pk)
+    task = get_object_or_404(Task, pk=pk, user=request.user)
     task.completed = not task.completed
     task.save(update_fields=["completed"])
     return redirect(task)
 
-
+@login_required
 def categories(request):
     if request.method == "POST":
         form = CategoryForm(request.POST)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
             return redirect("categories")
     else:
         form = CategoryForm()
 
-    categories_qs = Category.objects.annotate(task_count=Count("task")).order_by("name")
-    uncategorized_count = Task.objects.filter(category__isnull=True).count()
+    categories_qs = (
+        Category.objects.filter(user=request.user)
+        .annotate(task_count=Count("tasks"))
+        .order_by("name")
+    )
+    uncategorized_count = Task.objects.filter(
+        user=request.user,
+        category__isnull=True,
+    ).count()
 
     return render(
         request,
@@ -358,13 +424,16 @@ def categories(request):
     )
 
 
+@login_required
 def edit_category(request, pk: int):
-    category = get_object_or_404(Category, pk=pk)
+    category = get_object_or_404(Category, pk=pk, user=request.user)
 
     if request.method == "POST":
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
             return redirect("categories")
     else:
         form = CategoryForm(instance=category)
@@ -379,7 +448,7 @@ def edit_category(request, pk: int):
 def about(request):
     return render(request, "tracker/about.html")
 
-
+@login_required
 def calendar_view(request):
     today = date.today()
     year = int(request.GET.get("year", today.year))
@@ -393,6 +462,7 @@ def calendar_view(request):
 
     tasks = (
         Task.objects.filter(
+            user=request.user,
             due_date__isnull=False,
             due_date__range=(grid_start, grid_end),
         )
@@ -430,7 +500,7 @@ def calendar_view(request):
     }
     return render(request, "tracker/calendar.html", context)
 
-
+@login_required
 def import_tasks(request):
     if request.method == "POST":
         form = TaskImportForm(request.POST, request.FILES)
@@ -465,8 +535,11 @@ def import_tasks(request):
                         cat_name = (row.get("category") or "").strip()
                         category = None
                         if cat_name:
-                            category, _ = Category.objects.get_or_create(name=cat_name)
-
+                            # category, _ = Category.objects.get_or_create(name=cat_name)
+                            category, _ = Category.objects.get_or_create(
+                                user=request.user,
+                                name=cat_name,
+                            )
                         try:
                             due_date = _parse_csv_date(row.get("due_date") or "")
                         except ValueError:
@@ -514,6 +587,7 @@ def import_tasks(request):
                         completed = _parse_bool(row.get("completed") or "")
 
                         Task.objects.create(
+                            user=request.user,
                             title=title,
                             category=category,
                             due_date=due_date,
@@ -546,3 +620,50 @@ def import_tasks(request):
         "tracker/import_tasks.html",
         {"form": form, "errors": errors},
     )
+
+@login_required
+def task_list(request):
+    tasks = Task.objects.filter(user=request.user).select_related("category")
+
+    search = (request.GET.get("search") or "").strip()
+    status = (request.GET.get("status") or "").strip()
+    category_id = (request.GET.get("category") or "").strip()
+    sort = (request.GET.get("sort") or "").strip()
+
+    if search:
+        tasks = tasks.filter(title__icontains=search)
+
+    if status == "open":
+        tasks = tasks.filter(completed=False)
+    elif status == "completed":
+        tasks = tasks.filter(completed=True)
+
+    if category_id:
+        tasks = tasks.filter(category_id=category_id)
+
+    sort_map = {
+        "title": "title",
+        "-title": "-title",
+        "due_date": "due_date",
+        "-due_date": "-due_date",
+        "updated_at": "updated_at",
+        "-updated_at": "-updated_at",
+        "created_at": "created_at",
+        "-created_at": "-created_at",
+        "status": "completed",
+        "-status": "-completed",
+    }
+
+    tasks = tasks.order_by(sort_map.get(sort, "-updated_at"), "title")
+
+    categories = Category.objects.filter(user=request.user).order_by("name")
+
+    context = {
+        "tasks": tasks,
+        "categories": categories,
+        "search": search,
+        "status": status,
+        "category_id": category_id,
+        "sort": sort,
+    }
+    return render(request, "tracker/task_list.html", context)

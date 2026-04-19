@@ -1,0 +1,48 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Create account • Cadence{% endblock %}
+
+{% block content %}
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
+    <h1 class="page-title">Create account</h1>
+    <p class="subtext">Start building your own Cadence history and insights.</p>
+  </div>
+</section>
+
+<section class="card">
+  <form method="post" class="stack">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="form-row">
+      <label for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+    </div>
+
+    <div class="form-row">
+      <label for="{{ form.email.id_for_label }}">Email</label>
+      {{ form.email }}
+      {{ form.email.errors }}
+    </div>
+
+    <div class="form-row">
+      <label for="{{ form.password1.id_for_label }}">Password</label>
+      {{ form.password1 }}
+      {{ form.password1.errors }}
+    </div>
+
+    <div class="form-row">
+      <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+      {{ form.password2 }}
+      {{ form.password2.errors }}
+    </div>
+
+    <div class="button-row">
+      <button type="submit" class="btn btn-primary">Create account</button>
+      <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
