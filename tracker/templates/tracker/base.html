@@ -1,4 +1,5 @@
 <!doctype html>
+{# tracker/templates/tracker/base.html #}
 {% load static %}
 <html lang="en">
   <head>
@@ -7,39 +8,43 @@
     <title>{% block title %}Cadence{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
-    <link rel="icon" type="image" href="{% static 'tracker/cadence_favicon_multi.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'tracker/cadence_favicon_multi.png' %}">
   </head>
 
   <body>
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="{% url 'landing' %}">
-          <img src="{% static 'tracker/cadence_favicon.png' %}" alt="Cadence" class="brand-logo" />
-        </a>
-
         <button
           class="nav-toggle"
           type="button"
           aria-expanded="false"
-          aria-controls="primary_nav"
+          aria-controls="primary-nav"
           aria-label="Open navigation"
-          >
+        >
           <span class="nav-toggle-bar"></span>
           <span class="nav-toggle-bar"></span>
           <span class="nav-toggle-bar"></span>
         </button>
 
+        <a class="brand" href="{% url 'landing' %}">
+          <img
+            src="{% static 'tracker/cadence_favicon.png' %}"
+            alt="Cadence"
+            class="brand-logo"
+          />
+          <span>Cadence</span>
+        </a>
+
         <nav id="primary-nav" class="nav" aria-label="Primary navigation">
           <a class="nav-link" href="{% url 'landing' %}" {% block nav_home %}{% endblock %}>Home</a>
           <a class="nav-link" href="{% url 'dashboard' %}" {% block nav_dashboard %}{% endblock %}>Demo</a>
-          <a class="nav-link" href="{% url 'calendar' %}">Calendar View</a>
-<!--          <a class="nav-link" href="{% url 'add_task' %}" {% block nav_add_task %}{% endblock %}>Add Task</a>-->
+          <a class="nav-link" href="{% url 'calendar' %}">Calendar</a>
           <a class="nav-link" href="{% url 'categories' %}" {% block nav_categories %}{% endblock %}>Categories</a>
           <a class="nav-link" href="{% url 'about' %}" {% block nav_about %}{% endblock %}>About</a>
           <a class="nav-link" href="{% url 'login' %}">Sign in</a>
         </nav>
-    </div>
-  </header>
+      </div>
+    </header>
 
     <main class="container main">
       {% block content %}{% endblock %}
@@ -50,6 +55,7 @@
         <small>Cadence • Django demo</small>
       </div>
     </footer>
+
     <script>
       (() => {
         const toggle = document.querySelector(".nav-toggle");
@@ -72,6 +78,14 @@
               nav.classList.remove("nav--open");
             }
           });
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 760) {
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-label", "Open navigation");
+            nav.classList.remove("nav--open");
+          }
         });
       })();
     </script>

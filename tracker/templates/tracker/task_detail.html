@@ -1,58 +1,69 @@
-{# tracker/templates/tracker/task_detail.html #}
 {% extends "tracker/base.html" %}
 
-{% block title %}{{ task.title }} • Task Tracker{% endblock %}
+{% block title %}{{ task.title }} • Cadence{% endblock %}
 {% block nav_dashboard %}aria-current="page"{% endblock %}
 
 {% block content %}
+<div class="task-back-link-row">
+  <a href="{% url 'dashboard' %}" class="task-back-link">← Back to dashboard</a>
+</div>
+
 <section class="hero card card--hero">
-  <div class="stack">
-    <div class="detail-header-row">
-      <div class="stack stack--tight">
-        <h1 class="page-title">{{ task.title }}</h1>
-        <div class="meta-row">
-          {% if task.category %}
-            <span class="badge">{{ task.category.name }}</span>
-          {% else %}
-            <span class="badge">Uncategorized</span>
-          {% endif %}
+  <div class="stack stack--tight">
+    <h1 class="page-title">{{ task.title }}</h1>
 
-          {% if task.completed %}
-            <span class="badge">Completed</span>
-          {% else %}
-            <span class="badge">In progress</span>
-          {% endif %}
+    <div class="task-meta-row">
+      <span class="meta-pill">
+        {% if task.category %}{{ task.category.name }}{% else %}Uncategorized{% endif %}
+      </span>
 
-          {% if task.due_date %}
-            <span class="subtext">Due {{ task.due_date|date:"F j, Y" }}</span>
-          {% else %}
-            <span class="subtext">No due date</span>
-          {% endif %}
-        </div>
-      </div>
+      <span class="meta-pill meta-pill--status">
+        {% if task.completed %}Completed{% else %}In progress{% endif %}
+      </span>
 
-      <div class="button-row">
-        <a href="{% url 'edit_task' task.pk %}" class="btn btn-primary">Edit</a>
-
-        <form method="post" action="{% url 'toggle_task_complete' task.pk %}">
-          {% csrf_token %}
-          {% if task.completed %}
-            <button type="submit" class="btn btn-secondary">Mark as open</button>
-          {% else %}
-            <button type="submit" class="btn btn-secondary">Mark complete</button>
-          {% endif %}
-        </form>
-
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to dashboard</a>
-      </div>
+      <span class="task-meta-text">
+        {% if task.due_date %}
+          Due {{ task.due_date|date:"F j, Y" }}
+        {% else %}
+          No due date
+        {% endif %}
+      </span>
     </div>
   </div>
 </section>
 
-<section class="grid-2">
+<section class="grid-2 task-detail-grid">
   <article class="card">
-    <h2>Planning & timing</h2>
+    <div class="snapshot-header">
+      <h2>Task snapshot</h2>
+
+      <div class="snapshot-header-actions">
+        <a href="{% url 'edit_task' task.pk %}" class="btn btn-primary snapshot-edit-btn">Edit</a>
+
+        <form method="post" action="{% url 'toggle_task_complete' task.pk %}" class="inline-form">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary snapshot-complete-btn">
+            {% if task.completed %}Mark as open{% else %}Mark complete{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+
     <div class="detail-list">
+      <div class="detail-row">
+        <span class="detail-label">Category</span>
+        <span class="detail-value">
+          {% if task.category %}{{ task.category.name }}{% else %}Uncategorized{% endif %}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Status</span>
+        <span class="detail-value">
+          {% if task.completed %}Completed{% else %}In progress{% endif %}
+        </span>
+      </div>
+
       <div class="detail-row">
         <span class="detail-label">Due</span>
         <span class="detail-value">
@@ -73,7 +84,22 @@
           {% if task.end_at %}{{ task.end_at|date:"F j, Y, g:i A" }}{% else %}Not recorded{% endif %}
         </span>
       </div>
+    </div>
 
+    <div class="snapshot-notes">
+      <h3>Notes</h3>
+      {% if task.notes %}
+        <div class="notes-content">{{ task.notes|linebreaks }}</div>
+      {% else %}
+        <p class="subtext">No notes added yet.</p>
+      {% endif %}
+    </div>
+  </article>
+
+  <article class="card card--feature">
+    <h2>Task insight</h2>
+
+    <div class="detail-list">
       <div class="detail-row">
         <span class="detail-label">Estimated time</span>
         <span class="detail-value">{{ task.estimated_display }}</span>
@@ -81,100 +107,20 @@
 
       <div class="detail-row">
         <span class="detail-label">Actual time</span>
-        <span class="detail-value">
-          {% if task.duration_minutes %}
-            {% widthratio task.duration_minutes 60 1 as duration_hours %}
-            {% if task.duration_minutes >= 60 %}
-              {{ task.duration_minutes|divisibleby:60 }}
-            {% endif %}
-            {% if task.duration_minutes >= 60 %}
-              {% with hours=task.duration_minutes|floatformat:0 %}
-              {% endwith %}
-            {% endif %}
-            {% with total=task.duration_minutes %}
-              {% if total >= 60 %}
-                {{ total|add:"0" }}
-              {% endif %}
-            {% endwith %}
-            {% if task.duration_minutes >= 60 %}
-              {% with hours=task.duration_minutes|floatformat:0 %}{% endwith %}
-            {% endif %}
-            {{ task.duration_minutes }} minute{{ task.duration_minutes|pluralize }}
-          {% else %}
-            Not tracked
-          {% endif %}
-        </span>
+        <span class="detail-value">{{ task.actual_display }}</span>
       </div>
 
       <div class="detail-row">
         <span class="detail-label">Planning difference</span>
-        <span class="detail-value">
-          {% if task.estimated_minutes and task.duration_minutes %}
-            {% if task.duration_minutes > task.estimated_minutes %}
-              Took {{ task.duration_minutes|add:task.estimated_minutes|add:"-0" }} total minutes
-            {% elif task.duration_minutes < task.estimated_minutes %}
-              Finished faster than estimated
-            {% else %}
-              Matched estimate
-            {% endif %}
-          {% else %}
-            Waiting for enough timing data
-          {% endif %}
-        </span>
+        <span class="detail-value">{{ task.planning_difference_display }}</span>
       </div>
     </div>
-  </article>
 
-  <article class="card card--feature">
-    <h2>Task insight</h2>
-    <div class="stack">
-      {% if not task.start_at and not task.end_at %}
-        <p class="subtext">
-          Add start and end times to compare this task’s estimate against the time it actually took.
-        </p>
-      {% elif task.start_at and not task.end_at %}
-        <p class="subtext">
-          This task has a start time but no end time yet, so actual duration cannot be calculated.
-        </p>
-      {% elif not task.estimated_minutes %}
-        <p class="subtext">
-          Add an estimate to make this task more useful for future planning insights.
-        </p>
-      {% elif task.duration_minutes and task.estimated_minutes %}
-        {% if task.duration_minutes > task.estimated_minutes %}
-          <p class="subtext">
-            This task took longer than estimated. That kind of pattern can help improve future planning.
-          </p>
-        {% elif task.duration_minutes < task.estimated_minutes %}
-          <p class="subtext">
-            This task finished faster than estimated. That may help refine future estimates.
-          </p>
-        {% else %}
-          <p class="subtext">
-            This task matched its estimate closely, which is useful for future planning accuracy.
-          </p>
-        {% endif %}
-      {% else %}
-        <p class="subtext">
-          This task already has useful planning detail. More complete timing data will improve future insight.
-        </p>
-      {% endif %}
-
-      <div class="stack stack--tight">
-        <span class="section-label">Quick actions</span>
-        <a href="{% url 'edit_task' task.pk %}" class="btn btn-secondary">Update this task</a>
-        <a href="{% url 'add_task' %}" class="btn btn-secondary">Add another task</a>
-      </div>
+    <div class="insight-panel">
+      <h3>What this suggests</h3>
+<!--      <p class="subtext">{{ task.insight_text }}</p>-->
+      <p class="subtext">AI generated insights will appear here | *future enhancement* </p>
     </div>
   </article>
-</section>
-
-<section class="card">
-  <h2>Notes</h2>
-  {% if task.notes %}
-    <div class="notes-content">{{ task.notes|linebreaks }}</div>
-  {% else %}
-    <p class="subtext">No notes added yet.</p>
-  {% endif %}
 </section>
 {% endblock %}
