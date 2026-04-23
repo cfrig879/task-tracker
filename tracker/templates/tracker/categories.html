@@ -1,62 +1,71 @@
 {% extends "tracker/base.html" %}
-{% block title %}Categories • Task Tracker{% endblock %}
+{% block title %}Categories • Cadence{% endblock %}
 {% block nav_categories %}aria-current="page"{% endblock %}
-{% block nav_calendar %}aria-current="page"{% endblock %}
 
 {% block content %}
-  <div class="hero">
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
     <h1 class="page-title">Categories</h1>
     <p class="subtext">Create categories to group tasks. Categories are optional.</p>
   </div>
+</section>
 
-  <div class="grid-2">
-    <section class="card card--wildflower">
-      <h2>Add Category</h2>
+<section class="grid-2">
+  <section class="card">
+    <div class="stack stack--tight">
+      <h2>Add category</h2>
 
-      <form class="form" method="post" novalidate>
+      <form method="post" class="stack" novalidate>
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-          <div class="meta">{{ form.non_field_errors }}</div>
+          <div class="subtext">{{ form.non_field_errors }}</div>
         {% endif %}
 
-        <div class="field">
+        <div>
           {{ form.name.label_tag }}
           {{ form.name }}
-          {% if form.name.errors %}<div class="meta">{{ form.name.errors }}</div>{% endif %}
+          {% if form.name.errors %}
+            <div class="subtext">{{ form.name.errors }}</div>
+          {% endif %}
         </div>
 
-        <div class="inline" style="margin-top: 12px;">
+        <div class="button-row">
           <button class="btn btn-primary" type="submit">Add category</button>
           <a class="btn btn-secondary" href="{% url 'dashboard' %}">Back</a>
         </div>
 
-        <p class="meta" style="margin-top: 10px;">
-          Tip: keep category names short (e.g., Work, Home, Personal).
+        <p class="subtext">
+          Tip: keep category names short, like Work, Home, or Personal.
         </p>
       </form>
-    </section>
+    </div>
+  </section>
 
-    <section class="card card--forest">
-      <h2>Category List</h2>
+  <section class="card card--feature">
+    <div class="stack stack--tight">
+      <h2>Category list</h2>
 
       <ul class="list">
         {% for c in categories %}
           <li>
             <strong>{{ c.name }}</strong>
-            <span class="badge">{{ c.task_count }} tasks</span>
-            <span class="meta">•</span>
+            <span class="subtext">{{ c.task_count }} tasks</span>
+            <span class="subtext">•</span>
             <a href="{% url 'edit_category' c.pk %}">Edit</a>
+            <span class="subtext">•</span>
+            <a href="{% url 'delete_category' c.pk %}">Delete</a>
           </li>
         {% empty %}
-          <li class="meta">No categories yet.</li>
+          <li class="subtext">No categories yet.</li>
         {% endfor %}
 
         <li>
           <strong>No category</strong>
-          <span class="badge warning">{{ uncategorized_count }} tasks</span>
+          <span class="subtext">{{ uncategorized_count }} tasks</span>
         </li>
       </ul>
-    </section>
-  </div>
+    </div>
+  </section>
+</section>
 {% endblock %}

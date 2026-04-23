@@ -17,12 +17,9 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
 from .category_forms import CategoryForm
-from .forms import SignUpForm, TaskForm
 from .import_forms import TaskImportForm
 from .models import Category, Task
 
-
-from django.contrib.auth.forms import AuthenticationForm
 from .forms import TaskForm, SignUpForm
 
 def landing(request):
@@ -383,6 +380,8 @@ def edit_task(request, pk: int):
 
     return render(request, "tracker/edit_task.html", {"form": form, "task": task})
 
+
+
 @login_required
 @require_POST
 def toggle_task_complete(request, pk: int):
@@ -399,6 +398,7 @@ def categories(request):
             category = form.save(commit=False)
             category.user = request.user
             category.save()
+            messages.success(request, "Category added.")
             return redirect("categories")
     else:
         form = CategoryForm()
@@ -413,15 +413,12 @@ def categories(request):
         category__isnull=True,
     ).count()
 
-    return render(
-        request,
-        "tracker/categories.html",
-        {
-            "form": form,
-            "categories": categories_qs,
-            "uncategorized_count": uncategorized_count,
-        },
-    )
+    context = {
+        "form": form,
+        "categories": categories_qs,
+        "uncategorized_count": uncategorized_count,
+    }
+    return render(request, "tracker/categories.html", context)
 
 
 @login_required
@@ -434,15 +431,31 @@ def edit_category(request, pk: int):
             category = form.save(commit=False)
             category.user = request.user
             category.save()
+            messages.success(request, "Category updated.")
             return redirect("categories")
     else:
         form = CategoryForm(instance=category)
 
-    return render(
-        request,
-        "tracker/edit_category.html",
-        {"form": form, "category": category},
-    )
+    context = {
+        "form": form,
+        "category": category,
+    }
+    return render(request, "tracker/edit_category.html", context)
+
+
+@login_required
+def delete_category(request, pk: int):
+    category = get_object_or_404(Category, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        category.delete()
+        messages.success(request, "Category deleted.")
+        return redirect("categories")
+
+    context = {
+        "category": category,
+    }
+    return render(request, "tracker/delete_category.html", context)
 
 
 def about(request):

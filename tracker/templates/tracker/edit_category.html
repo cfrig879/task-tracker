@@ -1,33 +1,59 @@
 {% extends "tracker/base.html" %}
-{% block title %}Edit Category • Task Tracker{% endblock %}
+{% block title %}Edit category • Cadence{% endblock %}
 {% block nav_categories %}aria-current="page"{% endblock %}
 
 {% block content %}
-  <div class="hero">
-    <h1 class="page-title">Edit Category</h1>
-    <p class="subtext">Update the name for: <strong>{{ category.name }}</strong></p>
+<div class="task-back-link-row">
+  <a href="{% url 'categories' %}" class="task-back-link">← Back to categories</a>
+</div>
+
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
+    <h1 class="page-title">Edit category</h1>
+    <p class="subtext">Update the category name or remove it from your list.</p>
   </div>
+</section>
 
-  <section class="card card--gold">
-    <h2>Category Details</h2>
+<section class="grid-2">
+  <section class="card">
+    <div class="stack stack--tight">
+      <h2>Category details</h2>
 
-    <form class="form" method="post" novalidate>
-      {% csrf_token %}
+      <form method="post" class="stack" novalidate>
+        {% csrf_token %}
 
-      {% if form.non_field_errors %}
-        <div class="meta">{{ form.non_field_errors }}</div>
-      {% endif %}
+        {% if form.non_field_errors %}
+          <div class="subtext">{{ form.non_field_errors }}</div>
+        {% endif %}
 
-      <div class="field">
-        {{ form.name.label_tag }}
-        {{ form.name }}
-        {% if form.name.errors %}<div class="meta">{{ form.name.errors }}</div>{% endif %}
-      </div>
+        <div>
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {% if form.name.errors %}
+            <div class="subtext">{{ form.name.errors }}</div>
+          {% endif %}
+        </div>
 
-      <div class="inline" style="margin-top: 12px;">
-        <button class="btn btn-primary" type="submit">Save changes</button>
-        <a class="btn btn-secondary" href="{% url 'categories' %}">Cancel</a>
-      </div>
-    </form>
+        <div class="button-row">
+          <button class="btn btn-primary" type="submit">Save changes</button>
+          <a class="btn btn-secondary" href="{% url 'categories' %}">Cancel</a>
+        </div>
+      </form>
+    </div>
   </section>
+
+  <section class="card">
+    <div class="stack stack--tight">
+      <h2>Category summary</h2>
+      <p><strong>Name:</strong> {{ category.name }}</p>
+      <p class="subtext">
+        Deleting this category will not delete its tasks. Those tasks will become uncategorized.
+      </p>
+
+      <div class="button-row">
+        <a class="btn btn-secondary" href="{% url 'delete_category' category.pk %}">Delete category</a>
+      </div>
+    </div>
+  </section>
+</section>
 {% endblock %}

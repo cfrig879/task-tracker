@@ -654,6 +654,14 @@ code {
         text-align: left;
     }
 
+    .nav-user-label {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+    }
+
     .grid-2,
     .stats-grid,
     .calendar-grid {
