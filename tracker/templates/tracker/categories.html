@@ -11,6 +11,31 @@
 </section>
 
 <section class="grid-2">
+  <section class="card card--feature">
+    <div class="stack stack--tight">
+      <h2>Category list</h2>
+
+      <ul class="list">
+        {% for c in categories %}
+          <li>
+            <strong>{{ c.name }}</strong>
+            <span class="subtext">{{ c.task_count }} tasks</span>
+            <span class="subtext">•</span>
+            <a href="{% url 'edit_category' c.pk %}">Edit</a>
+            <span class="subtext">•</span>
+            <a href="{% url 'delete_category' c.pk %}">Delete</a>
+          </li>
+        {% empty %}
+          <li class="subtext">No categories yet.</li>
+        {% endfor %}
+
+        <li>
+          <strong>No category</strong>
+          <span class="subtext">{{ uncategorized_count }} tasks</span>
+        </li>
+      </ul>
+    </div>
+  </section>
   <section class="card">
     <div class="stack stack--tight">
       <h2>Add category</h2>
@@ -42,30 +67,6 @@
     </div>
   </section>
 
-  <section class="card card--feature">
-    <div class="stack stack--tight">
-      <h2>Category list</h2>
 
-      <ul class="list">
-        {% for c in categories %}
-          <li>
-            <strong>{{ c.name }}</strong>
-            <span class="subtext">{{ c.task_count }} tasks</span>
-            <span class="subtext">•</span>
-            <a href="{% url 'edit_category' c.pk %}">Edit</a>
-            <span class="subtext">•</span>
-            <a href="{% url 'delete_category' c.pk %}">Delete</a>
-          </li>
-        {% empty %}
-          <li class="subtext">No categories yet.</li>
-        {% endfor %}
-
-        <li>
-          <strong>No category</strong>
-          <span class="subtext">{{ uncategorized_count }} tasks</span>
-        </li>
-      </ul>
-    </div>
-  </section>
 </section>
 {% endblock %}

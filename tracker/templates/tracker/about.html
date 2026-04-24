@@ -1,25 +1,99 @@
 {% extends "tracker/base.html" %}
-{% block title %}About • Task Tracker{% endblock %}
+
+{% block title %}About • Cadence{% endblock %}
 {% block nav_about %}aria-current="page"{% endblock %}
-{% block nav_calendar %}aria-current="page"{% endblock %}
 
 {% block content %}
-  <h1 class="page-title">About</h1>
-  <p class="subtext">A simple Django task tracker with optional category grouping.</p>
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
+    <h1 class="page-title">About us</h1>
+    <p class="subtext">We build calm tools that help you plan honestly and learn from how time actually goes.</p>
+  </div>
+</section>
 
-  <section class="card">
-    <h2>Purpose</h2>
-    <p>
-      This project helps users record tasks, view them on a dashboard, and track completion.
-      Categories can be used to group tasks when helpful.
-    </p>
+<section class="stack">
+  <div class="card card--feature">
+    <div class="stack">
+      <h2>Our mission</h2>
+      <p>
+        Cadence exists to help people build healthier routines through reflection.
+        We focus on the gap between what you planned and what happened — not as judgement,
+        but as information you can use.
+      </p>
+    </div>
+  </div>
 
-    <h2>Planned Features</h2>
-    <ul class="list">
-      <li>Create tasks with optional category and due date</li>
-      <li>View tasks on a dashboard</li>
-      <li>Mark tasks complete/incomplete</li>
-      <li>Improve usability and design over time</li>
-    </ul>
-  </section>
+  <div class="grid-2">
+    <div class="card">
+      <div class="stack">
+        <h2>What we do</h2>
+        <p>
+          Cadence is a lightweight task and time tracker that compares estimates to actual time,
+          then surfaces small behavioral insights.
+        </p>
+        <p class="subtext">
+          It’s a reflection system — not a productivity whip.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stack">
+        <h2>Why we built it</h2>
+        <p>
+          Most tools celebrate completion. We wanted something that supports awareness:
+          how long things really take, what pulls you off course, and what patterns repeat.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card--accent">
+    <div class="stack">
+      <h2>What we believe</h2>
+      <ul class="stack stack--tight" style="margin: 0; padding-left: 1.15rem;">
+        <li>Calm design beats noisy dashboards.</li>
+        <li>Small friction compounds into abandonment.</li>
+        <li>Insight changes behavior more reliably than guilt.</li>
+        <li>Your time data should stay private by default.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="stack">
+        <h2>What’s next</h2>
+        <ul class="stack stack--tight" style="margin: 0; padding-left: 1.15rem;">
+          <li>Demo mode improvements</li>
+          <li>Better CSV import validation</li>
+          <li>Mobile polish</li>
+          <li>Pagination and filtering</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stack">
+        <h2>Contact</h2>
+        <p>
+          Have feedback or want to collaborate?
+        </p>
+        <p class="subtext" style="margin-top: -0.25rem;">
+          Email: <strong>hello@cadence.example</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stack">
+      <h2>Privacy</h2>
+      <p>
+        We keep data collection minimal. Your tasks belong to you.
+        If we add analytics later, it should be transparent, optional, and respectful.
+      </p>
+    </div>
+  </div>
+</section>
 {% endblock %}

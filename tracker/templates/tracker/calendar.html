@@ -13,11 +13,16 @@
 
 <section class="card">
   <div class="calendar-toolbar">
-    <a class="btn btn-secondary" href="?year={{ prev_year }}&month={{ prev_month }}">← Prev</a>
-    <div class="calendar-toolbar-title">
-      <strong>{{ month_name }} {{ year }}</strong>
+    <a class="btn btn-secondary calendar-toolbar-prev" href="?year={{ prev_year }}&month={{ prev_month }}">← Prev</a>
+
+    <div class="calendar-toolbar-center">
+      <div class="calendar-toolbar-title">
+        <strong>{{ month_name }} {{ year }}</strong>
+      </div>
+      <a class="btn btn-neutral btn-sm calendar-toolbar-today" href="{% url 'calendar' %}?today=1">To today</a>
     </div>
-    <a class="btn btn-secondary" href="?year={{ next_year }}&month={{ next_month }}">Next →</a>
+
+    <a class="btn btn-secondary calendar-toolbar-next" href="?year={{ next_year }}&month={{ next_month }}">Next →</a>
   </div>
 
   <div class="calendar-desktop">

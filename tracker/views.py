@@ -1,9 +1,10 @@
 # tracker/views.py
 from pathlib import Path
 import calendar
-import csv
-import io
+import openpyxl
+import re
 from datetime import date, datetime, timedelta
+
 
 from django.conf import settings
 from django.contrib import messages
@@ -25,6 +26,8 @@ from .forms import TaskForm, SignUpForm
 def landing(request):
     return render(request, "tracker/landing.html")
 
+def demo_coming_soon(request):
+    return render(request, "tracker/demo_coming_soon.html")
 # def login_coming_soon(request):
 #     context = {
 #         "title": "Sign in is coming soon",
@@ -33,7 +36,7 @@ def landing(request):
 #             "their routines, view long-term patterns, and receive individualized insights."
 #         ),
 #     }
-#     return render(request, "tracker/coming_soon.html", context)
+#     return render(request, "tracker/demo_coming_soon.html", context)
 
 # def signup_coming_soon(request):
 #     context = {
@@ -43,7 +46,7 @@ def landing(request):
 #             "their own history, routines, and personalized planning insights over time."
 #         ),
 #     }
-#     return render(request, "tracker/coming_soon.html", context)
+#     return render(request, "tracker/demo_coming_soon.html", context)
 def signup(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
@@ -90,6 +93,19 @@ def _format_minutes(total_minutes: int | None) -> str:
 def _parse_bool(value: str) -> bool:
     return (value or "").strip().lower() in {"1", "true", "yes", "y", "t"}
 
+def _normalize_category_name(raw: str) -> str:
+    """
+    Normalize category names to prevent duplicates caused by casing/whitespace.
+
+    Rules:
+    - strip leading/trailing whitespace
+    - collapse internal whitespace to single spaces
+    - title-case for consistent display (optional but recommended)
+    """
+    cleaned = re.sub(r"\s+", " ", (raw or "").strip())
+    if not cleaned:
+        return ""
+    return cleaned.title()
 
 def _parse_csv_date(value: str) -> date | None:
     raw = (value or "").strip()
@@ -464,8 +480,13 @@ def about(request):
 @login_required
 def calendar_view(request):
     today = date.today()
-    year = int(request.GET.get("year", today.year))
-    month = int(request.GET.get("month", today.month))
+
+    if request.GET.get("today") == "1":
+        year = today.year
+        month = today.month
+    else:
+        year = int(request.GET.get("year", today.year))
+        month = int(request.GET.get("month", today.month))
 
     cal = calendar.Calendar(firstweekday=6)
     weeks = cal.monthdatescalendar(year, month)
@@ -520,110 +541,168 @@ def import_tasks(request):
         if form.is_valid():
             file_obj = form.cleaned_data["file"]
 
-            if not file_obj.name.lower().endswith(".csv"):
-                form.add_error("file", "Please upload a .csv file.")
+            # ✅ Template-only: must be .xlsx
+            if not file_obj.name.lower().endswith(".xlsx"):
+                form.add_error("file", "Please upload the Cadence Excel template (.xlsx).")
             else:
-                decoded = file_obj.read().decode("utf-8-sig")
-                reader = csv.DictReader(io.StringIO(decoded))
+                created = 0
+                skipped = 0
+                errors: list[str] = []
 
-                required = {"title"}
-                missing = required - set(reader.fieldnames or [])
-                if missing:
+                try:
+                    wb = openpyxl.load_workbook(file_obj, data_only=True)
+                except Exception:
                     form.add_error(
                         "file",
-                        f"Missing required column(s): {', '.join(sorted(missing))}",
+                        "That file could not be read as an Excel workbook. Please use the Cadence template.",
                     )
-                else:
-                    created = 0
-                    skipped = 0
-                    errors: list[str] = []
+                    wb = None
 
-                    for idx, row in enumerate(reader, start=2):
-                        title = (row.get("title") or "").strip()
-                        if not title:
-                            skipped += 1
-                            errors.append(f"Row {idx}: title is required.")
-                            continue
-
-                        cat_name = (row.get("category") or "").strip()
-                        category = None
-                        if cat_name:
-                            # category, _ = Category.objects.get_or_create(name=cat_name)
-                            category, _ = Category.objects.get_or_create(
-                                user=request.user,
-                                name=cat_name,
-                            )
-                        try:
-                            due_date = _parse_csv_date(row.get("due_date") or "")
-                        except ValueError:
-                            skipped += 1
-                            errors.append(
-                                f"Row {idx}: invalid due_date "
-                                f"'{(row.get('due_date') or '').strip()}' "
-                                f"(use YYYY-MM-DD)."
-                            )
-                            continue
-
-                        try:
-                            start_at = _parse_csv_datetime(row.get("start_at") or "")
-                        except ValueError as exc:
-                            skipped += 1
-                            errors.append(f"Row {idx}: {exc}.")
-                            continue
-
-                        try:
-                            end_at = _parse_csv_datetime(row.get("end_at") or "")
-                        except ValueError as exc:
-                            skipped += 1
-                            errors.append(f"Row {idx}: {exc}.")
-                            continue
-
-                        if start_at and end_at and end_at < start_at:
-                            skipped += 1
-                            errors.append(
-                                f"Row {idx}: end_at must be after start_at."
-                            )
-                            continue
-
-                        try:
-                            estimated_minutes = _parse_estimated_minutes(row)
-                        except ValueError:
-                            skipped += 1
-                            errors.append(
-                                f"Row {idx}: invalid estimate values "
-                                f"(estimated_minutes, estimated_hours, "
-                                f"estimated_minutes_part must be integers)."
-                            )
-                            continue
-
-                        notes = (row.get("notes") or "").strip()
-                        completed = _parse_bool(row.get("completed") or "")
-
-                        Task.objects.create(
-                            user=request.user,
-                            title=title,
-                            category=category,
-                            due_date=due_date,
-                            start_at=start_at,
-                            end_at=end_at,
-                            estimated_minutes=estimated_minutes,
-                            notes=notes,
-                            completed=completed,
+                if wb is not None:
+                    if "Tasks" not in wb.sheetnames:
+                        form.add_error(
+                            "file",
+                            "Invalid template: missing the 'Tasks' sheet. Please download the Cadence template and try again.",
                         )
-                        created += 1
+                    else:
+                        ws = wb["Tasks"]
 
-                    messages.success(
-                        request,
-                        f"Imported {created} task(s). Skipped {skipped}.",
-                    )
-                    if errors:
-                        messages.warning(
-                            request,
-                            "Some rows were skipped. Review errors on the import page.",
-                        )
+                        # Find header row containing "title"
+                        header_row_idx = None
+                        header_map: dict[str, int] = {}
+                        max_cols = min(ws.max_column, 40)
 
-                    request.session["import_errors"] = errors[:50]
-                    return redirect("import_tasks")
+                        for r in range(1, min(ws.max_row, 25) + 1):
+                            values = [ws.cell(r, c).value for c in range(1, max_cols + 1)]
+                            normalized = [(str(v).strip().lower() if v is not None else "") for v in values]
+                            if "title" in normalized:
+                                header_row_idx = r
+                                for c, name in enumerate(normalized, start=1):
+                                    if name:
+                                        header_map[name] = c
+                                break
+
+                        if header_row_idx is None:
+                            form.add_error(
+                                "file",
+                                "Invalid template: could not find a header row with a 'title' column.",
+                            )
+                        else:
+                            required_cols = {
+                                "title",
+                                "category",
+                                "due_date",
+                                "start_at",
+                                "end_at",
+                                "estimated_hours",
+                                "estimated_minutes_part",
+                                "notes",
+                                "completed",
+                            }
+                            missing = required_cols - set(header_map.keys())
+                            if missing:
+                                form.add_error(
+                                    "file",
+                                    f"Invalid template: missing column(s): {', '.join(sorted(missing))}.",
+                                )
+                            else:
+                                def cell_str(row_num: int, col_name: str) -> str:
+                                    val = ws.cell(row_num, header_map[col_name]).value
+                                    return "" if val is None else str(val).strip()
+
+                                for row_num in range(header_row_idx + 1, ws.max_row + 1):
+                                    title = cell_str(row_num, "title")
+                                    if not title:
+                                        # treat completely blank rows as ignorable
+                                        row_values = [ws.cell(row_num, c).value for c in header_map.values()]
+                                        if all(v is None or (isinstance(v, str) and not v.strip()) for v in row_values):
+                                            continue
+                                        skipped += 1
+                                        errors.append(f"Row {row_num}: title is required.")
+                                        continue
+
+                                    cat_name_raw = cell_str(row_num, "category")
+                                    cat_name = _normalize_category_name(cat_name_raw)
+
+                                    category = None
+                                    if cat_name:
+                                        category, _ = Category.objects.get_or_create(
+                                            user=request.user,
+                                            name=cat_name,
+                                        )
+
+                                    try:
+                                        due_date = _parse_csv_date(cell_str(row_num, "due_date"))
+                                    except ValueError:
+                                        skipped += 1
+                                        errors.append(
+                                            f"Row {row_num}: invalid due_date '{cell_str(row_num, 'due_date')}' (use YYYY-MM-DD)."
+                                        )
+                                        continue
+
+                                    try:
+                                        start_at = _parse_csv_datetime(cell_str(row_num, "start_at"))
+                                    except ValueError as exc:
+                                        skipped += 1
+                                        errors.append(f"Row {row_num}: {exc}.")
+                                        continue
+
+                                    try:
+                                        end_at = _parse_csv_datetime(cell_str(row_num, "end_at"))
+                                    except ValueError as exc:
+                                        skipped += 1
+                                        errors.append(f"Row {row_num}: {exc}.")
+                                        continue
+
+                                    if start_at and end_at and end_at < start_at:
+                                        skipped += 1
+                                        errors.append(f"Row {row_num}: end_at must be after start_at.")
+                                        continue
+
+                                    row_dict = {
+                                        "estimated_hours": cell_str(row_num, "estimated_hours"),
+                                        "estimated_minutes_part": cell_str(row_num, "estimated_minutes_part"),
+                                        # if your helper checks this key too, keep it safe:
+                                        "estimated_minutes": "",
+                                    }
+
+                                    try:
+                                        estimated_minutes = _parse_estimated_minutes(row_dict)
+                                    except ValueError:
+                                        skipped += 1
+                                        errors.append(
+                                            f"Row {row_num}: invalid estimate values (estimated_hours and estimated_minutes_part must be integers)."
+                                        )
+                                        continue
+
+                                    notes = cell_str(row_num, "notes")
+                                    completed = _parse_bool(cell_str(row_num, "completed"))
+
+                                    Task.objects.create(
+                                        user=request.user,
+                                        title=title,
+                                        category=category,
+                                        due_date=due_date,
+                                        start_at=start_at,
+                                        end_at=end_at,
+                                        estimated_minutes=estimated_minutes,
+                                        notes=notes,
+                                        completed=completed,
+                                    )
+                                    created += 1
+
+                                messages.success(
+                                    request,
+                                    f"Imported {created} task(s). Skipped {skipped}.",
+                                )
+                                if errors:
+                                    messages.warning(
+                                        request,
+                                        "Some rows were skipped. Review errors on the import page.",
+                                    )
+
+                                request.session["import_errors"] = errors[:50]
+                                return redirect("import_tasks")
     else:
         form = TaskImportForm()
 

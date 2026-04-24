@@ -6,31 +6,41 @@
 <section class="hero card card--hero">
   <div class="stack stack--tight">
     <h1 class="page-title">Sign in</h1>
-    <p class="subtext">Sign in to your Cadence account.</p>
+    <p class="subtext">Welcome back. Continue to your dashboard.</p>
   </div>
 </section>
 
-<section class="card">
-  <form method="post" class="stack">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
+<section class="card card--feature">
+  <div class="stack">
+    {% if form.errors %}
+      <div class="message message-error">
+        {{ form.non_field_errors }}
+        {{ form.username.errors }}
+        {{ form.password.errors }}
+      </div>
+    {% endif %}
 
-    <div class="form-row">
-      <label for="{{ form.username.id_for_label }}">Username</label>
-      {{ form.username }}
-      {{ form.username.errors }}
-    </div>
+    <form method="post" action="{% url 'login' %}" class="form-grid">
+      {% csrf_token %}
 
-    <div class="form-row">
-      <label for="{{ form.password.id_for_label }}">Password</label>
-      {{ form.password }}
-      {{ form.password.errors }}
-    </div>
+      {# ✅ Critical: carry through ?next=/dashboard/ so LoginView redirects correctly #}
+      <input type="hidden" name="next" value="{{ next }}">
 
-    <div class="button-row">
-      <button type="submit" class="btn btn-primary">Sign in</button>
-      <a href="{% url 'signup' %}" class="btn btn-secondary">Create account</a>
-    </div>
-  </form>
+      <div class="form-field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div class="form-field">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+      </div>
+
+      <div class="button-row">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+        <a class="btn btn-neutral" href="{% url 'signup' %}">Create account</a>
+      </div>
+    </form>
+  </div>
 </section>
 {% endblock %}

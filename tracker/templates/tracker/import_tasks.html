@@ -1,14 +1,17 @@
 {# tracker/templates/tracker/import_tasks.html #}
 {% extends "tracker/base.html" %}
 
-{% block title %}Import Tasks • Task Tracker{% endblock %}
+{% block title %}Import Tasks • Cadence{% endblock %}
+
 {% block content %}
 <section class="hero card card--hero">
   <div class="stack">
     <h1 class="page-title">Import tasks</h1>
     <p class="subtext">
-      Upload a CSV of tasks and routine entries. For the smoothest import, start with the Excel template.
+      Upload the Cadence Excel template (.xlsx) to add tasks to your account.
+      The template includes an Instructions tab with the supported fields and examples.
     </p>
+
     <div class="button-row">
       <a href="{% url 'download_import_template' %}" class="btn btn-primary">
         Download Excel template
@@ -22,7 +25,8 @@
 
 <section class="grid-2">
   <article class="card">
-    <h2>Upload file</h2>
+    <h2>Upload template</h2>
+
     <form method="post" enctype="multipart/form-data" class="stack">
       {% csrf_token %}
 
@@ -35,6 +39,10 @@
       <div class="stack">
         {{ form.file.label_tag }}
         {{ form.file }}
+        <p class="subtext">
+          Accepted file type: <code>.xlsx</code> (Cadence template only)
+        </p>
+
         {% if form.file.errors %}
           <div class="form-errors">
             {{ form.file.errors }}
@@ -42,47 +50,40 @@
         {% endif %}
       </div>
 
-      <button type="submit" class="btn btn-primary">Import CSV</button>
+      <button type="submit" class="btn btn-primary">Import Excel</button>
     </form>
   </article>
 
-  <article class="card">
-    <h2>Format guide</h2>
+  <article class="card card--feature">
+    <h2>How to use the template</h2>
     <div class="stack">
       <p class="subtext">
-        Required column:
-        <code>title</code>
+        1) Download the Excel template.
+      </p>
+      <p class="subtext">
+        2) Open it and read the <strong>Instructions</strong> tab.
+      </p>
+      <p class="subtext">
+        3) Fill in the <strong>Tasks</strong> tab (one task per row).
+      </p>
+      <p class="subtext">
+        4) Upload the saved <code>.xlsx</code> file here.
       </p>
 
-      <p class="subtext">
-        Supported columns:
-        <code>title</code>,
-        <code>category</code>,
-        <code>due_date</code>,
-        <code>start_at</code>,
-        <code>end_at</code>,
-        <code>estimated_hours</code>,
-        <code>estimated_minutes_part</code>,
-        <code>notes</code>,
-        <code>completed</code>
-      </p>
-
-      <p class="subtext">
-        Date format:
-        <code>YYYY-MM-DD</code>
-      </p>
-
-      <p class="subtext">
-        Date/time format:
-        <code>YYYY-MM-DD HH:MM</code>
-        or
-        <code>YYYY-MM-DDTHH:MM</code>
-      </p>
-
-      <p class="subtext">
-        Completed values:
-        <code>TRUE</code> or <code>FALSE</code>
-      </p>
+      <div class="card" style="margin: 0;">
+        <div class="stack stack--tight">
+          <div class="section-label">Import behavior</div>
+          <p class="subtext">
+            • Tasks are imported into <strong>your</strong> account only.
+          </p>
+          <p class="subtext">
+            • If a category name doesn’t exist yet, it will be created automatically.
+          </p>
+          <p class="subtext">
+            • Category is optional — leaving it blank is okay.
+          </p>
+        </div>
+      </div>
     </div>
   </article>
 </section>
@@ -110,9 +111,4 @@
     </ul>
   </section>
 {% endif %}
-
-<section class="card">
-  <h2>Example row</h2>
-  <pre>Test Task 2,Personal,2026-05-19,2026-04-18 14:20,2026-04-19 08:10,4,6,Call doctor’s office to reschedule appointment,TRUE</pre>
-</section>
 {% endblock %}

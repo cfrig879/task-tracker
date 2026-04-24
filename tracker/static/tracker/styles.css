@@ -75,6 +75,7 @@ main {
 
 .header-inner {
   display: flex;
+  flex-wrap: wrap; /* allow the signed-in row to sit beneath the nav ribbon */
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -112,6 +113,16 @@ main {
   gap: 0.7rem;
 }
 
+/* Buttons that are styled like nav links should look identical to <a.nav-link> */
+.nav-link-button {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
 .nav-link {
   display: inline-flex;
   align-items: center;
@@ -131,10 +142,38 @@ main {
   background: rgba(255, 255, 255, 0.82);
 }
 
+
+
+.nav-link--neutral {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--border);
+}
+
+.nav-link--gold {
+  color: var(--text);
+  background: linear-gradient(180deg, #ddd190, #cdbf71);
+  border-color: rgba(104, 95, 46, 0.12);
+}
+
+.nav-link--primary {
+  color: #fff;
+  background: linear-gradient(180deg, var(--primary), var(--primary-strong));
+  border-color: transparent;
+}
+
 .nav-link[aria-current="page"] {
   color: #fff;
   background: linear-gradient(180deg, #44749a, #2f6657);
   border-color: transparent;
+}
+
+.nav-link.nav-link--neutral[aria-current="page"],
+.nav-link.nav-link--gold[aria-current="page"],
+.nav-link.nav-link--primary[aria-current="page"] {
+    color: #fff;
+    background: linear-gradient(180deg, #44749a, #2f6657);
+    border-color: transparent;
 }
 
 .nav-toggle {
@@ -171,6 +210,22 @@ main {
 
 .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ✅ Signed-in label row (global) */
+.header-user-row {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.35rem;
+}
+
+.header-user-label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95rem;
+  color: var(--text-soft);
+  white-space: nowrap;
 }
 
 .site-footer {
@@ -279,8 +334,12 @@ h2 {
   border: 1px solid transparent;
   text-decoration: none;
   font-weight: 700;
+  line-height: 1.1;
+  font: inherit;
   cursor: pointer;
-  transition: transform 0.15s ease, filter 0.15s ease, background 0.15s ease;
+  transition: transform 0.15s ease, filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .btn:hover {
@@ -288,15 +347,43 @@ h2 {
   filter: brightness(1.02);
 }
 
+/* Primary teal */
 .btn-primary {
   color: #fff;
   background: linear-gradient(180deg, var(--primary), var(--primary-strong));
+  border-color: transparent;
 }
 
+.btn-primary:hover {
+  filter: brightness(1.04);
+}
+
+/* Gold */
 .btn-secondary {
   color: var(--text);
   background: linear-gradient(180deg, #ddd190, #cdbf71);
   border-color: rgba(104, 95, 46, 0.12);
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.03);
+}
+
+/* Light / neutral */
+.btn-neutral {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--border);
+}
+
+.btn-neutral:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.95rem;
 }
 
 .grid-2 {
@@ -637,6 +724,9 @@ code {
         justify-content: flex-start;
         min-height: 40px;
         padding: 0.65rem 0.9rem;
+    }
+
+    .nav-link:not(.nav-link--neutral):not(.nav-link--gold):not(.nav-link--primary) {
         background: rgba(255, 255, 255, 0.72);
     }
 
@@ -644,22 +734,19 @@ code {
         margin: 0;
     }
 
-    .nav-link-button {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-        text-align: left;
-    }
-
     .nav-user-label {
         display: inline-flex;
         align-items: center;
         font-size: 0.95rem;
-        color: var(--text-muted);
+        color: var(--text-soft);
         white-space: nowrap;
+    }
+
+    /* ✅ Mobile override: place signed-in row under the header/nav area */
+    .header-user-row {
+      grid-column: 1 / -1;
+      justify-self: end;
+      margin-top: 0.35rem;
     }
 
     .grid-2,
@@ -694,17 +781,31 @@ code {
 }
 
 .calendar-toolbar {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* left / center / right */
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-toolbar-prev {
+  justify-self: start; /* pin left */
+}
+
+.calendar-toolbar-next {
+  justify-self: end; /* pin right */
+}
+
+.calendar-toolbar-center {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
 }
 
 .calendar-toolbar-title {
-    text-align: center;
-    font-size: 1.4rem;
-    line-height: 1.2;
+  text-align: center;
+  font-size: 1.75rem; /* bigger title */
+  line-height: 1.15;
 }
 
 .calendar-desktop {
@@ -772,17 +873,16 @@ code {
 
 @media (max-width: 760px) {
     .calendar-toolbar {
-        grid-template-columns: auto 1fr auto;
         gap: 0.5rem;
-    }
+      }
+
+      .calendar-toolbar-title {
+        font-size: 1.35rem;
+      }
 
     .calendar-toolbar .btn {
         min-height: 38px;
         padding: 0.55rem 0.75rem;
-    }
-
-    .calendar-toolbar-title {
-        font-size: 1.15rem;
     }
 
     .calendar-desktop {
@@ -923,4 +1023,3 @@ code {
     justify-content: center;
   }
 }
-

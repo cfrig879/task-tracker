@@ -81,8 +81,8 @@ DATABASES = {
 }
 
 # Login section
-LOGIN_REDIRECT_URL = "dashboard"
-LOGOUT_REDIRECT_URL = "landing"
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/"
 LOGIN_URL = "login"
 
 # Password validation
