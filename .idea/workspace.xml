@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="38c32115-552d-4773-8cee-6b7ffa845f5a" name="Changes" comment="Functional Deeper Dev Milestone 4. Next is refinement.">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/demo_coming_soon.html" afterDir="false" />
+    <list default="true" id="38c32115-552d-4773-8cee-6b7ffa845f5a" name="Changes" comment="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo.">
+      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/delete_task.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/import_forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/import_forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/static/tracker/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/static/tracker/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/static/tracker/task_import_template.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/static/tracker/task_import_template.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/add_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/add_task.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/categories.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/categories.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/coming_soon.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/demo_coming_soon.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/demo_dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/edit_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/edit_task.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/import_tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/import_tasks.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/landing.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/landing.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/task_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/task_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/task_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/task_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/tests.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/views.py" afterDir="false" />
     </list>
@@ -38,7 +43,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="DeeperDev" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -63,20 +68,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;DeeperDev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/frige/PycharmProjects/task-tracker/tracker/static/tracker&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.manage.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "DeeperDev2",
+    "last_opened_file_path": "C:/Users/frige/PycharmProjects/task-tracker/tracker/static/tracker",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\frige\PycharmProjects\task-tracker\tracker\static\tracker" />
@@ -145,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776952551014</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo.">
+      <option name="closed" value="true" />
+      <created>1777043078867</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1777043078867</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -165,6 +179,7 @@
     <MESSAGE value="Functional Deeper Dev Milestone 1" />
     <MESSAGE value="Functional Deeper Dev Milestone 3. Bugs/next steps: not able to navigate to task_list.html, need to add logged in banner display at the top of the base template to quickly see who you are logged in as." />
     <MESSAGE value="Functional Deeper Dev Milestone 4. Next is refinement." />
-    <option name="LAST_COMMIT_MESSAGE" value="Functional Deeper Dev Milestone 4. Next is refinement." />
+    <MESSAGE value="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo." />
+    <option name="LAST_COMMIT_MESSAGE" value="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo." />
   </component>
 </project>

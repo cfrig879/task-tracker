@@ -1,9 +1,11 @@
 # Cadence
+Author: Chase Frigen
+Course: APC 440
 
 Cadence is a Django web application for tracking tasks, comparing estimated vs actual time, and reflecting on patterns.
 
 ## What you need (Windows)
-- Python 3.x
+- Python 3.14.3
 - This repo (including `requirements.txt`)
 
 ## Run Cadence (Windows)

@@ -1,7 +1,6 @@
 {% extends "tracker/base.html" %}
 
 {% block title %}{{ task.title }} • Cadence{% endblock %}
-{% block nav_dashboard %}aria-current="page"{% endblock %}
 
 {% block content %}
 <div class="task-back-link-row">
@@ -46,6 +45,7 @@
             {% if task.completed %}Mark as open{% else %}Mark complete{% endif %}
           </button>
         </form>
+        <a href="{% url 'delete_task' task.pk %}" class="btn btn-secondary">Delete task</a>
       </div>
     </div>
 

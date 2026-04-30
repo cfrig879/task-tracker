@@ -2,6 +2,8 @@
 
 {% block title %}All entries • Cadence{% endblock %}
 
+{% block nav_task_list %}aria-current="page"{% endblock %}
+
 {% block content %}
 <section class="hero card card--hero">
   <div class="stack stack--tight">
@@ -96,7 +98,7 @@
 
 <section class="card">
   <div class="table-wrap">
-    <table class="data-table">
+    <table class="data-table task-table">
       <thead>
         <tr>
           <th>Title</th>
@@ -113,47 +115,53 @@
       <tbody>
         {% for task in tasks %}
           <tr>
-            <td>
+            <td data-label="Title">
               <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
             </td>
-            <td>
+
+            <td data-label="Category">
               {% if task.category %}
                 {{ task.category.name }}
               {% else %}
                 Uncategorized
               {% endif %}
             </td>
-            <td>
+
+            <td data-label="Status">
               {% if task.completed %}
                 Completed
               {% else %}
                 In progress
               {% endif %}
             </td>
-            <td>
+
+            <td data-label="Due">
               {% if task.due_date %}
                 {{ task.due_date|date:"M j, Y" }}
               {% else %}
                 -
               {% endif %}
             </td>
-            <td>
+
+            <td data-label="Started">
               {% if task.start_at %}
                 {{ task.start_at|date:"M j, Y g:i A" }}
               {% else %}
                 -
               {% endif %}
             </td>
-            <td>
+
+            <td data-label="Ended">
               {% if task.end_at %}
                 {{ task.end_at|date:"M j, Y g:i A" }}
               {% else %}
                 -
               {% endif %}
             </td>
-            <td>{{ task.estimated_display }}</td>
-            <td>{{ task.actual_display }}</td>
-            <td>{{ task.planning_difference_display }}</td>
+
+            <td data-label="Estimated">{{ task.estimated_display }}</td>
+            <td data-label="Actual">{{ task.actual_display }}</td>
+            <td data-label="Difference">{{ task.planning_difference_display }}</td>
           </tr>
         {% empty %}
           <tr>

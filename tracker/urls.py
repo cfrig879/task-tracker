@@ -12,7 +12,7 @@ urlpatterns = [
     ),
     path("signup/", views.signup, name="signup"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
-    path("demo/", views.demo_coming_soon, name="demo"),
+    path("demo/", views.demo_dashboard, name="demo"),
     path("dashboard/", views.dashboard, name="dashboard"),
 
     path("tasks/add/", views.add_task, name="add_task"),
@@ -20,6 +20,7 @@ urlpatterns = [
     path("tasks/<int:pk>/edit/", views.edit_task, name="edit_task"),
     path("tasks/<int:pk>/toggle/", views.toggle_task_complete, name="toggle_task_complete"),
     path("tasks/", views.task_list, name="task_list"),
+    path("tasks/<int:pk>/delete/", views.delete_task, name="delete_task"),
 
     path("tasks/import/", views.import_tasks, name="import_tasks"),
     path("tasks/import/template/", views.download_import_template, name="download_import_template"),

@@ -11,37 +11,53 @@
 </section>
 
 <section class="card">
-  <form method="post" class="stack">
+  <form method="post" class="form-grid">
     {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <div class="form-row">
+    <div class="form-field">
       <label for="{{ form.username.id_for_label }}">Username</label>
       {{ form.username }}
       {{ form.username.errors }}
     </div>
 
-    <div class="form-row">
+    <div class="form-field">
       <label for="{{ form.email.id_for_label }}">Email</label>
       {{ form.email }}
       {{ form.email.errors }}
     </div>
 
-    <div class="form-row">
+    <div class="form-field">
       <label for="{{ form.password1.id_for_label }}">Password</label>
       {{ form.password1 }}
-      {{ form.password1.errors }}
+
+      {% if form.password1.errors %}
+        <div class="form-errors">
+          {{ form.password1.errors }}
+        </div>
+      {% endif %}
     </div>
 
-    <div class="form-row">
-      <label for="{{ form.password2.id_for_label }}">Confirm password</label>
-      {{ form.password2 }}
-      {{ form.password2.errors }}
-    </div>
+   <div class="form-field">
+    <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+    {{ form.password2 }}
 
-    <div class="button-row">
-      <button type="submit" class="btn btn-primary">Create account</button>
-      <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
+    {% if form.password2.errors %}
+      <div class="form-errors">
+        {{ form.password2.errors }}
+      </div>
+    {% endif %}
+  </div>
+
+    <div class="stack stack--tight">
+      <div class="button-row">
+        <button type="submit" class="btn btn-primary">Create account</button>
+      </div>
+
+      <p class="subtext">
+        Already have an account?
+        <a href="{% url 'login' %}">Sign in here</a>.
+      </p>
     </div>
   </form>
 </section>

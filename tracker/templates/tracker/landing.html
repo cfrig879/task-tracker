@@ -8,10 +8,10 @@
   <div class="stack">
     <h1 class="page-title">Cadence</h1>
     <p class="subtext">
-      A calmer way to track tasks, routines, and time patterns so you can understand how you actually work.
+      Plan your time with less guesswork.
     </p>
     <p class="subtext">
-      Cadence helps you log tasks and routines over time, compare your plans to what actually happens, and spot patterns that affect productivity and stress.
+      Cadence helps you compare what you expected to what actually happened, so everyday tasks become useful feedback for better planning.
     </p>
 
     <div class="button-row">
@@ -22,7 +22,6 @@
           {% csrf_token %}
           <button type="submit" class="nav-link nav-link-button">Sign out</button>
         </form>
-
       {% else %}
         <a href="{% url 'signup' %}" class="btn btn-primary">Create account</a>
         <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
@@ -33,39 +32,41 @@
 
 <section class="grid-3">
   <article class="card">
-    <h2>Track your routine</h2>
+    <h2>Start with a plan</h2>
     <p class="subtext">
-      Log tasks, timing, categories, and notes in one place.
+      Add what needs to get done, when it’s due, and how long you think it will take.
     </p>
   </article>
 
   <article class="card">
-    <h2>Spot patterns over time</h2>
+    <h2>Record what happened</h2>
     <p class="subtext">
-      Notice where you underestimate, what causes stress, and where your schedule drifts.
+      Track actual time, completion, notes, and context as your day unfolds.
     </p>
   </article>
 
   <article class="card">
-    <h2>Improve how you plan</h2>
+    <h2>Learn from the gap</h2>
     <p class="subtext">
-      Turn day-to-day data into better decisions and more realistic routines.
+      Use the difference between planned and actual time to make future plans more realistic.
     </p>
   </article>
 </section>
 
 <section class="card card--feature">
-  <h2>Why Cadence feels different</h2>
+  <h2>More than a task list</h2>
   <p class="subtext">
-    Cadence is not just a place to store tasks. It is designed to help you compare intention to reality, understand how your routine actually works, and find calmer ways to improve it.
+    Cadence is designed to help you notice patterns in your planning habits, not just store tasks.
+    Over time, those patterns can show where time slips away, where estimates are accurate, and what may need more attention.
   </p>
 </section>
+
 {% if not user.is_authenticated %}
 <section class="card card--feature">
   <div class="stack">
     <div class="stack stack--tight">
       <h2>Want to see how it works?</h2>
-      <p class="subtext">Jump into a quick demo dashboard — no account required.</p>
+      <p class="subtext">Explore a sample dashboard — no account required.</p>
     </div>
 
     <div class="button-row">
