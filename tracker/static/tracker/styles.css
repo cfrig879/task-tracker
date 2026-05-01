@@ -1,5 +1,3 @@
-/* tracker/static/tracker/styles.css */
-
 :root {
   --bg-1: #eef3ef;
   --bg-2: #e3ebe6;
@@ -697,6 +695,22 @@ code {
 .calendar-task.cat-earth { background: rgba(170, 141, 103, 0.2); }
 .calendar-task.cat-forest { background: rgba(98, 145, 108, 0.2); }
 .calendar-task.cat-none { background: rgba(160, 171, 178, 0.22); }
+
+.calendar-task--overdue {
+  border: 1px solid rgba(190, 60, 60, 0.45);
+  background: rgba(190, 60, 60, 0.12);
+  color: #7a1f1f;
+  font-weight: 700;
+}
+
+.calendar-task--overdue::before {
+  content: "Overdue: ";
+}
+
+.calendar-task--completed {
+  text-decoration: line-through;
+  opacity: 0.65;
+}
 
 @media (max-width: 980px) {
   .grid-3 {

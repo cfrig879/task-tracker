@@ -42,7 +42,7 @@
               {% if day_tasks %}
                 <div class="calendar-tasks">
                   {% for task in day_tasks %}
-                    <a class="calendar-task {{ task.category|category_class }}" href="{{ task.get_absolute_url }}">
+                    <a class="calendar-task {{ task.category|category_class }}{% if task.completed %} calendar-task--completed{% elif task.due_date < today %} calendar-task--overdue{% endif %}" href="{{ task.get_absolute_url }}">
                       {{ task.title }}
                     </a>
                   {% endfor %}
@@ -70,8 +70,8 @@
 
                   <div class="calendar-mobile-tasks">
                     {% for task in day_tasks %}
-                      <a class="calendar-task {{ task.category|category_class }}" href="{{ task.get_absolute_url }}">
                         {{ task.title }}
+                        <a class="calendar-task {{ task.category|category_class }}{% if task.completed %} calendar-task--completed{% elif task.due_date < today %} calendar-task--overdue{% endif %}" href="{{ task.get_absolute_url }}">
                       </a>
                     {% endfor %}
                   </div>

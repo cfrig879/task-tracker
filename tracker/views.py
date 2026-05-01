@@ -1,4 +1,3 @@
-# tracker/views.py
 from pathlib import Path
 import calendar
 import openpyxl
@@ -169,13 +168,8 @@ def dashboard(request):
 
     base_qs = Task.objects.filter(user=request.user).select_related("category")
 
-    # --- Focus lists for the updated dashboard template ---
     in_progress_tasks = list(
-        base_qs.filter(
-            completed=False,
-            start_at__isnull=False,
-            end_at__isnull=True,
-        )
+        base_qs.filter(completed=False, start_at__isnull=False, end_at__isnull=True)
         .order_by("start_at", "due_date", "title")[:8]
     )
 
@@ -185,23 +179,15 @@ def dashboard(request):
     )
 
     overdue_tasks = list(
-        base_qs.filter(
-            completed=False,
-            due_date__lt=today,
-        )
+        base_qs.filter(completed=False, due_date__lt=today)
         .order_by("due_date", "title")[:12]
     )
 
     upcoming_tasks = list(
-        base_qs.filter(
-            completed=False,
-            due_date__gte=today,
-            due_date__lte=next_7_days,
-        )
+        base_qs.filter(completed=False, due_date__gte=today, due_date__lte=next_7_days)
         .order_by("due_date", "start_at", "title")[:12]
     )
 
-    # --- Triage counts (match template language) ---
     overdue_count = base_qs.filter(completed=False, due_date__lt=today).count()
     due_today_count = base_qs.filter(completed=False, due_date=today).count()
     missing_estimate_count = base_qs.filter(
@@ -209,83 +195,99 @@ def dashboard(request):
         estimated_minutes__isnull=True,
     ).count()
 
-    # "Missing actual duration" = completed but lacking timing needed for duration
-    missing_actual_duration_count = (
-        base_qs.filter(completed=True, start_at__isnull=True).count()
-        + base_qs.filter(completed=True, start_at__isnull=False, end_at__isnull=True).count()
-    )
+    missing_actual_duration_count = base_qs.filter(completed=True).filter(
+        Q(start_at__isnull=True) | Q(end_at__isnull=True)
+    ).count()
 
-    # Template treats uncategorized as a "needs attention" count (open tasks)
     uncategorized_count = base_qs.filter(completed=False, category__isnull=True).count()
 
-    # --- Week computations (keep your existing logic) ---
-    week_tasks = base_qs.filter(updated_at__date__range=(week_start, week_end))
-    completed_this_week_count = week_tasks.filter(completed=True).count()
+    week_tasks = list(base_qs.filter(due_date__range=(week_start, week_end)))
 
-    planned_this_week_minutes = sum(task.estimated_minutes or 0 for task in week_tasks)
-    actual_this_week_minutes = sum(
-        task.duration_minutes or 0
+    completed_this_week_count = sum(1 for task in week_tasks if task.completed)
+
+    comparable_week_tasks = [
+        task
         for task in week_tasks
-        if task.duration_minutes is not None
-    )
+        if task.completed
+        and task.estimated_minutes is not None
+        and task.duration_minutes is not None
+    ]
+
+    planned_this_week_minutes = sum(task.estimated_minutes for task in comparable_week_tasks)
+    actual_this_week_minutes = sum(task.duration_minutes for task in comparable_week_tasks)
 
     planned_this_week_display = _format_minutes(planned_this_week_minutes)
     actual_this_week_display = _format_minutes(actual_this_week_minutes)
 
-    largest_overrun_category_name = "None yet"
-    category_overruns: dict[str, int] = {}
-
-    for task in week_tasks:
-        if task.estimated_minutes and task.duration_minutes is not None:
-            diff = task.duration_minutes - task.estimated_minutes
-            if diff > 0:
-                category_name = task.category.name if task.category else "Uncategorized"
-                category_overruns[category_name] = category_overruns.get(category_name, 0) + diff
-
-    if category_overruns:
-        largest_overrun_category_name = max(category_overruns, key=category_overruns.get)
-
-    # --- Insight completion percent ---
-    recent_detailed_tasks = list(base_qs.filter(updated_at__date__range=(week_start, week_end))[:25])
-    total_recent_entries = len(recent_detailed_tasks)
-    sufficiently_detailed_entries = sum(
-        1
-        for task in recent_detailed_tasks
-        if task.category_id and task.estimated_minutes and task.duration_minutes is not None
+    underestimated_count = sum(
+        1 for task in comparable_week_tasks
+        if task.duration_minutes > task.estimated_minutes
     )
+
+    overestimated_count = sum(
+        1 for task in comparable_week_tasks
+        if task.duration_minutes < task.estimated_minutes
+    )
+
+    missing_estimate_this_week_count = sum(
+        1 for task in week_tasks
+        if task.estimated_minutes is None
+    )
+
+    completed_without_duration_count = sum(
+        1 for task in week_tasks
+        if task.completed and task.duration_minutes is None
+    )
+
+    largest_overrun_category_name = "None yet"
+    overrun_by_category: dict[str, int] = {}
+
+    for task in comparable_week_tasks:
+        diff = task.duration_minutes - task.estimated_minutes
+        if diff > 0:
+            category_name = task.category.name if task.category else "Uncategorized"
+            overrun_by_category[category_name] = overrun_by_category.get(category_name, 0) + diff
+
+    if overrun_by_category:
+        largest_overrun_category_name = max(overrun_by_category, key=overrun_by_category.get)
+
+    total_recent_entries = len(week_tasks)
+    sufficiently_detailed_entries = len(comparable_week_tasks)
+
     insight_completion_percent = (
         round((sufficiently_detailed_entries / total_recent_entries) * 100)
         if total_recent_entries
         else 0
     )
 
-    # --- Weekly signals ---
-    underestimated_count = 0
-    overrun_by_category: dict[str, int] = {}
-    completed_without_duration_count = 0
-
-    for task in week_tasks:
-        duration = task.duration_minutes
-
-        if task.completed and duration is None:
-            completed_without_duration_count += 1
-
-        if task.estimated_minutes and duration is not None and duration > task.estimated_minutes:
-            underestimated_count += 1
-            category_name = task.category.name if task.category else "Uncategorized"
-            overrun_by_category[category_name] = overrun_by_category.get(category_name, 0) + (duration - task.estimated_minutes)
-
     weekly_signals: list[str] = []
 
-    if underestimated_count:
-        weekly_signals.append(
-            f"You underestimated {underestimated_count} task{'s' if underestimated_count != 1 else ''} this week."
-        )
+    if comparable_week_tasks:
+        if actual_this_week_minutes > planned_this_week_minutes:
+            weekly_signals.append(
+                "Completed tasks with timing data took longer than planned this week."
+            )
+        elif actual_this_week_minutes < planned_this_week_minutes:
+            weekly_signals.append(
+                "Completed tasks with timing data took less time than planned this week."
+            )
+        else:
+            weekly_signals.append(
+                "Completed tasks with timing data matched the planned time this week."
+            )
 
-    if overrun_by_category:
-        top_category = max(overrun_by_category, key=overrun_by_category.get)
+        if underestimated_count:
+            weekly_signals.append(
+                f"{underestimated_count} completed task{'s' if underestimated_count != 1 else ''} took longer than estimated."
+            )
+
+        if overestimated_count:
+            weekly_signals.append(
+                f"{overestimated_count} completed task{'s' if overestimated_count != 1 else ''} took less time than estimated."
+            )
+    else:
         weekly_signals.append(
-            f"{top_category} took longer than planned more than any other category this week."
+            "Add estimates and start/end times to completed tasks to unlock stronger weekly insights."
         )
 
     if completed_without_duration_count:
@@ -293,35 +295,32 @@ def dashboard(request):
             f"{completed_without_duration_count} completed task{'s' if completed_without_duration_count != 1 else ''} still need actual timing data."
         )
 
-    if not weekly_signals and total_recent_entries:
+    if missing_estimate_this_week_count:
         weekly_signals.append(
-            "Your recent data looks consistent enough to start surfacing stronger patterns soon."
+            f"{missing_estimate_this_week_count} task{'s' if missing_estimate_this_week_count != 1 else ''} this week are missing estimates."
         )
 
     context = {
-        # lists used by the updated template
         "in_progress_tasks": in_progress_tasks,
         "today_tasks": today_tasks,
         "overdue_tasks": overdue_tasks,
         "upcoming_tasks": upcoming_tasks,
 
-        # counts
         "overdue_count": overdue_count,
         "due_today_count": due_today_count,
         "missing_estimate_count": missing_estimate_count,
         "missing_actual_duration_count": missing_actual_duration_count,
         "uncategorized_count": uncategorized_count,
 
-        # weekly summary
         "completed_this_week_count": completed_this_week_count,
         "planned_this_week_display": planned_this_week_display,
         "actual_this_week_display": actual_this_week_display,
         "largest_overrun_category_name": largest_overrun_category_name,
 
-        # insights
         "weekly_signals": weekly_signals,
         "insight_completion_percent": insight_completion_percent,
     }
+
     return render(request, "tracker/dashboard.html", context)
 
 @login_required
@@ -543,7 +542,7 @@ def import_tasks(request):
                     else:
                         ws = wb["Tasks"]
 
-                        # Find header row containing "title"
+                        # Find header row containing 'title'
                         header_row_idx = None
                         header_map: dict[str, int] = {}
                         max_cols = min(ws.max_column, 40)
@@ -589,7 +588,7 @@ def import_tasks(request):
                                 for row_num in range(header_row_idx + 1, ws.max_row + 1):
                                     title = cell_str(row_num, "title")
                                     if not title:
-                                        # treat completely blank rows as ignorable
+                                        # skip completely blank rows
                                         row_values = [ws.cell(row_num, c).value for c in header_map.values()]
                                         if all(v is None or (isinstance(v, str) and not v.strip()) for v in row_values):
                                             continue
