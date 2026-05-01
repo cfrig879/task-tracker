@@ -1,0 +1,222 @@
+{# tracker/templates/tracker/demo_dashboard.html #}
+{% extends "tracker/base.html" %}
+{% block title %}Demo • Cadence{% endblock %}
+
+{% block content %}
+<section class="hero card card--hero">
+  <div class="stack">
+    <h1 class="page-title">Demo dashboard (preview)</h1>
+    <p class="subtext">
+      This is a static preview of what a regularly-used Cadence dashboard could look like once insights are fully integrated.
+      (No account data is shown here.)
+    </p>
+    <div class="button-row">
+      <a href="{% url 'signup' %}" class="btn btn-primary">Create account</a>
+      <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
+      <a href="{% url 'landing' %}" class="btn btn-secondary">Back home</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid-3">
+  <article class="card">
+    <h2>Needs attention</h2>
+    <div class="stack">
+      <a href="#demo-overdue" class="dashboard-link-row">
+        <span>Overdue</span>
+        <strong>3</strong>
+      </a>
+      <a href="#demo-now" class="dashboard-link-row">
+        <span>Due today</span>
+        <strong>5</strong>
+      </a>
+      <a href="#demo-quality" class="dashboard-link-row">
+        <span>Missing estimates</span>
+        <strong>7</strong>
+      </a>
+      <a href="#demo-quality" class="dashboard-link-row">
+        <span>Missing actual duration</span>
+        <strong>2</strong>
+      </a>
+      <a href="#demo-quality" class="dashboard-link-row">
+        <span>Uncategorized</span>
+        <strong>4</strong>
+      </a>
+    </div>
+  </article>
+
+  <article class="card" id="demo-now">
+    <h2>Now</h2>
+
+    <div class="stack">
+      <span class="section-label">In progress</span>
+
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Write weekly reflection</strong>
+          <div class="subtext">Started 9:10 AM · Deep Work</div>
+        </div>
+        <span class="badge">Active</span>
+      </a>
+
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Kitchen reset</strong>
+          <div class="subtext">Started 10:05 AM · Home</div>
+        </div>
+        <span class="badge">Active</span>
+      </a>
+    </div>
+
+    <div class="stack mt-3">
+      <span class="section-label">Due today</span>
+
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Strength workout</strong>
+          <div class="subtext">Due today · Health</div>
+        </div>
+        <span class="badge">Open</span>
+      </a>
+
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Inbox cleanup</strong>
+          <div class="subtext">Due today · Admin</div>
+        </div>
+        <span class="badge">Open</span>
+      </a>
+
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Buy groceries</strong>
+          <div class="subtext">Due today · Home</div>
+        </div>
+        <span class="badge">Open</span>
+      </a>
+    </div>
+  </article>
+
+  <article class="card" id="demo-quality">
+    <h2>Insight quality</h2>
+    <div class="stack">
+      <p class="subtext">
+        68% of recent entries have enough detail for stronger analysis.
+      </p>
+      <ul class="stack">
+        <li>7 tasks missing estimates.</li>
+        <li>2 completed tasks missing actual duration.</li>
+        <li>4 uncategorized tasks.</li>
+      </ul>
+
+      <div class="card card--feature" style="margin: 0;">
+        <div class="stack stack--tight">
+          <div class="section-label">AI suggestion</div>
+          <p class="subtext">
+            Your “Admin” tasks average 20–35% longer than your estimates. Consider adding a 10-minute buffer by default.
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="grid-2 mt-4">
+  <article class="card card--insight">
+    <h2>This week’s signals</h2>
+    <ul class="stack">
+      <li>You underestimated 4 tasks this week, mostly in Admin and Home.</li>
+      <li>Deep Work sessions are most accurate when scheduled before noon.</li>
+      <li>Days with a planned “unwind” block show fewer overruns.</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>Week at a glance</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Completed</span>
+        <strong>12</strong>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Planned</span>
+        <strong>8h 10m</strong>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Actual</span>
+        <strong>9h 05m</strong>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Largest overrun</span>
+        <strong>Admin</strong>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="grid-2 mt-4">
+  <article class="card" id="demo-overdue">
+    <h2>Overdue</h2>
+    <div class="stack">
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Schedule dentist</strong>
+          <div class="subtext">Due Apr 12 · Health</div>
+        </div>
+        <span class="badge">Overdue</span>
+      </a>
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Submit reimbursement</strong>
+          <div class="subtext">Due Apr 18 · Admin</div>
+        </div>
+        <span class="badge">Overdue</span>
+      </a>
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Clean out downloads folder</strong>
+          <div class="subtext">Due Apr 21 · Uncategorized</div>
+        </div>
+        <span class="badge">Overdue</span>
+      </a>
+    </div>
+  </article>
+
+  <article class="card">
+    <h2>Upcoming (next 7 days)</h2>
+    <div class="stack">
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Meal prep</strong>
+          <div class="subtext">Due Apr 25 · Home</div>
+        </div>
+      </a>
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Plan next sprint</strong>
+          <div class="subtext">Due Apr 26 · Deep Work</div>
+        </div>
+      </a>
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Long walk</strong>
+          <div class="subtext">Due Apr 27 · Health</div>
+        </div>
+      </a>
+      <a href="{% url 'login' %}" class="task-row">
+        <div class="stack stack--tight">
+          <strong>Read 20 pages</strong>
+          <div class="subtext">Due Apr 28 · Learning</div>
+        </div>
+      </a>
+    </div>
+  </article>
+</section>
+
+<section class="card mt-4">
+  <h2>Demo note</h2>
+  <p class="subtext">
+    In the full version, these sections are generated from your tasks and timing history, scoped to your account.
+  </p>
+</section>
+{% endblock %}

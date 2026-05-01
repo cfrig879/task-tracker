@@ -1,0 +1,78 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Cadence{% endblock %}
+{% block nav_home %}aria-current="page"{% endblock %}
+
+{% block content %}
+<section class="hero card card--hero">
+  <div class="stack">
+    <h1 class="page-title">Cadence</h1>
+    <p class="subtext">
+      Plan your time with less guesswork.
+    </p>
+    <p class="subtext">
+      Cadence helps you compare what you expected to what actually happened, so everyday tasks become useful feedback for better planning.
+    </p>
+
+    <div class="button-row">
+      {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to dashboard</a>
+
+        <form method="post" action="{% url 'logout' %}" class="inline-form">
+          {% csrf_token %}
+          <button type="submit" class="nav-link nav-link-button">Sign out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'signup' %}" class="btn btn-primary">Create account</a>
+        <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="grid-3">
+  <article class="card">
+    <h2>Start with a plan</h2>
+    <p class="subtext">
+      Add what needs to get done, when it’s due, and how long you think it will take.
+    </p>
+  </article>
+
+  <article class="card">
+    <h2>Record what happened</h2>
+    <p class="subtext">
+      Track actual time, completion, notes, and context as your day unfolds.
+    </p>
+  </article>
+
+  <article class="card">
+    <h2>Learn from the gap</h2>
+    <p class="subtext">
+      Use the difference between planned and actual time to make future plans more realistic.
+    </p>
+  </article>
+</section>
+
+<section class="card card--feature">
+  <h2>More than a task list</h2>
+  <p class="subtext">
+    Cadence is designed to help you notice patterns in your planning habits, not just store tasks.
+    Over time, those patterns can show where time slips away, where estimates are accurate, and what may need more attention.
+  </p>
+</section>
+
+{% if not user.is_authenticated %}
+<section class="card card--feature">
+  <div class="stack">
+    <div class="stack stack--tight">
+      <h2>Want to see how it works?</h2>
+      <p class="subtext">Explore a sample dashboard — no account required.</p>
+    </div>
+
+    <div class="button-row">
+      <a class="btn btn-primary" href="{% url 'demo' %}">Try the demo</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

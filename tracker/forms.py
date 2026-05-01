@@ -1,8 +1,24 @@
 from django import forms
-from .models import Task
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import Category, Task
 
+
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(required=False)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")
 
 class TaskForm(forms.ModelForm):
+    due_date = forms.DateField(
+        required=True,
+        label="Due date",
+        widget=forms.DateInput(attrs={"type": "date"}),
+        error_messages={"required": "Please choose a due date."},
+    )
+
     estimated_hours = forms.IntegerField(
         required=False,
         min_value=0,
@@ -17,45 +33,54 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        # IMPORTANT: exclude estimated_minutes from the visible fields
-        fields = ["title", "category", "due_date",
-                  "start_at", "end_at", "notes", "completed"]
-        widgets = {
-            "due_date": forms.DateInput(attrs={"type": "date"}),
-            "start_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "end_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "notes": forms.Textarea(attrs={"rows": 4}),
-        }
+        fields = [
+            "title",
+            "category",
+            "due_date",
+            "start_at",
+            "end_at",
+            "completed",
+            "notes",
+        ]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        # If editing an existing task, prefill hours/minutes from estimated_minutes
-        if self.instance and self.instance.pk and self.instance.estimated_minutes is not None:
-            total = int(self.instance.estimated_minutes)
-            self.fields["estimated_hours"].initial = total // 60
-            self.fields["estimated_minutes_part"].initial = total % 60
+        if self.instance and self.instance.estimated_minutes is not None:
+            self.fields["estimated_hours"].initial = self.instance.estimated_minutes // 60
+            self.fields["estimated_minutes_part"].initial = self.instance.estimated_minutes % 60
 
-    def clean(self):
-        cleaned = super().clean()
+        self.fields["title"].required = True
+        self.fields["title"].error_messages = {"required": "Please enter a title."}
 
-        hours = cleaned.get("estimated_hours")
-        minutes = cleaned.get("estimated_minutes_part")
+        self.fields["due_date"].required = True
+        self.fields["due_date"].error_messages = {"required": "Please choose a due date."}
 
-        # Treat blank as 0
-        hours = 0 if hours in (None, "") else int(hours)
-        minutes = 0 if minutes in (None, "") else int(minutes)
+        if self.user is not None and "category" in self.fields:
+            self.fields["category"].queryset = Category.objects.filter(user=self.user)
 
-        total = hours * 60 + minutes
+        if "start_at" in self.fields:
+            self.fields["start_at"].widget = forms.DateTimeInput(attrs={"type": "datetime-local"})
+            self.fields["start_at"].input_formats = ["%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M"]
 
-        # If both left blank/0, store NULL (keeps DB tidy)
-        cleaned["estimated_minutes_total"] = total if total > 0 else None
-        return cleaned
+        if "end_at" in self.fields:
+            self.fields["end_at"].widget = forms.DateTimeInput(attrs={"type": "datetime-local"})
+            self.fields["end_at"].input_formats = ["%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M"]
 
     def save(self, commit=True):
-        obj: Task = super().save(commit=False)
-        obj.estimated_minutes = self.cleaned_data.get("estimated_minutes_total")
+        task = super().save(commit=False)
+
+        hours = self.cleaned_data.get("estimated_hours") or 0
+        minutes = self.cleaned_data.get("estimated_minutes_part") or 0
+
+        if hours == 0 and minutes == 0:
+            task.estimated_minutes = None
+        else:
+            task.estimated_minutes = (hours * 60) + minutes
+
         if commit:
-            obj.save()
+            task.save()
             self.save_m2m()
-        return obj
+
+        return task

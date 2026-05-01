@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="38c32115-552d-4773-8cee-6b7ffa845f5a" name="Changes" comment="End of Week 2">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/category_forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/import_forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/edit_category.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/edit_task.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templates/tracker/import_tasks.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/templatetags/tracker_extras.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracker/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/task-tracker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/task-tracker.iml" afterDir="false" />
+    <list default="true" id="38c32115-552d-4773-8cee-6b7ffa845f5a" name="Changes" comment="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/static/tracker/CadenceLogo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/static/tracker/cadence_favicon_multi.ico" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/static/tracker/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/static/tracker/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/add_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/add_task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/categories.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/categories.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/static/tracker/task_import_template.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/static/tracker/task_import_template.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/calendar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tracker/templates/tracker/task_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templates/tracker/task_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/templatetags/tracker_extras.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/templatetags/tracker_extras.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tracker/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/tracker/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +28,13 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="DeeperDev" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="KEEP" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -51,6 +46,16 @@
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/cfrig879/task-tracker.git&quot;,
     &quot;accountId&quot;: &quot;934d622a-965f-410d-a46b-13ceb1eeefa3&quot;
+  },
+  &quot;recentNewPullRequestHead&quot;: {
+    &quot;server&quot;: {
+      &quot;useHttp&quot;: false,
+      &quot;host&quot;: &quot;github.com&quot;,
+      &quot;port&quot;: null,
+      &quot;suffix&quot;: null
+    },
+    &quot;owner&quot;: &quot;cfrig879&quot;,
+    &quot;repository&quot;: &quot;task-tracker&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -65,14 +70,22 @@
   &quot;keyToString&quot;: {
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.manage.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+    &quot;git-widget-placeholder&quot;: &quot;#1 on DeeperDev2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/frige/PycharmProjects/task-tracker/tracker/static/tracker&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\frige\PycharmProjects\task-tracker\tracker\static\tracker" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -96,7 +109,55 @@
       <option name="project" value="LOCAL" />
       <updated>1775434301673</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Functional Milestone 1">
+      <option name="closed" value="true" />
+      <created>1775855814631</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1775855814631</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Functional Deeper Dev Milestone 1">
+      <option name="closed" value="true" />
+      <created>1776025100425</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1776025100425</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Functional Deeper Dev Milestone 1">
+      <option name="closed" value="true" />
+      <created>1776625648024</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1776625648024</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Functional Deeper Dev Milestone 3. Bugs/next steps: not able to navigate to task_list.html, need to add logged in banner display at the top of the base template to quickly see who you are logged in as.">
+      <option name="closed" value="true" />
+      <created>1776633779857</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1776633779857</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Functional Deeper Dev Milestone 4. Next is refinement.">
+      <option name="closed" value="true" />
+      <created>1776952551014</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1776952551014</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo.">
+      <option name="closed" value="true" />
+      <created>1777043078867</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1777043078867</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -112,6 +173,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="End of Week 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="End of Week 2" />
+    <MESSAGE value="Functional Milestone 1" />
+    <MESSAGE value="Functional Deeper Dev Milestone 1" />
+    <MESSAGE value="Functional Deeper Dev Milestone 3. Bugs/next steps: not able to navigate to task_list.html, need to add logged in banner display at the top of the base template to quickly see who you are logged in as." />
+    <MESSAGE value="Functional Deeper Dev Milestone 4. Next is refinement." />
+    <MESSAGE value="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo." />
+    <option name="LAST_COMMIT_MESSAGE" value="Functional Deeper Dev Milestone 5. Next is refinement for minimal functionality demo." />
   </component>
 </project>

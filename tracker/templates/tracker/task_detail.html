@@ -1,76 +1,126 @@
 {% extends "tracker/base.html" %}
-{% block title %}Task Details • Task Tracker{% endblock %}
-{% block nav_dashboard %}aria-current="page"{% endblock %}
-{% block nav_calendar %}aria-current="page"{% endblock %}
+
+{% block title %}{{ task.title }} • Cadence{% endblock %}
 
 {% block content %}
-  <div class="hero">
-    <h1 class="page-title">Task Details</h1>
-    <p class="subtext">View details and status for this task.</p>
-  </div>
+<div class="task-back-link-row">
+  <a href="{% url 'dashboard' %}" class="task-back-link">← Back to dashboard</a>
+</div>
 
-  <div class="stack">
-    <section class="card card--lake">
-      <h2>Summary</h2>
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
+    <h1 class="page-title">{{ task.title }}</h1>
 
-      <p><strong>Title:</strong> {{ task.title }}</p>
+    <div class="task-meta-row">
+      <span class="meta-pill">
+        {% if task.category %}{{ task.category.name }}{% else %}Uncategorized{% endif %}
+      </span>
 
-      <p>
-        <strong>Category:</strong>
-        {% if task.category %}
-          <span class="badge lake">{{ task.category.name }}</span>
-        {% else %}
-          <span class="badge">No category</span>
-        {% endif %}
-      </p>
+      <span class="meta-pill meta-pill--status">
+        {% if task.completed %}Completed{% else %}In progress{% endif %}
+      </span>
 
-      <p>
-        <strong>Due date:</strong>
+      <span class="task-meta-text">
         {% if task.due_date %}
-          <span class="meta">{{ task.due_date }}</span>
+          Due {{ task.due_date|date:"F j, Y" }}
         {% else %}
-          <span class="meta">None</span>
+          No due date
         {% endif %}
-      </p>
-
-      <p>
-        <strong>Status:</strong>
-        {% if task.completed %}
-          <span class="badge success">Completed</span>
-        {% else %}
-          <span class="badge warning">In progress</span>
-        {% endif %}
-      </p>
-
-      <p>
-        <strong>Time:</strong>
-        {% if task.start_at %}<span class="badge flower">Start {{ task.start_at }}</span>{% else %}<span class="meta">No start time</span>{% endif %}
-        {% if task.end_at %}<span class="badge berry">End {{ task.end_at }}</span>{% endif %}
-      </p>
-
-      <p>
-        <strong>Duration:</strong>
-        {% if task.duration_minutes is not None %}
-          <span class="badge success">{{ task.duration_minutes }} min</span>
-        {% else %}
-          <span class="meta">Not tracked</span>
-        {% endif %}
-      </p>
-      <p><strong>Estimate:</strong> <span class="badge">{{ task.estimated_display }}</span></p>
-      <div class="inline" style="margin-top: 12px;">
-        <a class="btn btn-primary" href="{% url 'add_task' %}">Add another task</a>
-        <a class="btn btn-secondary" href="{% url 'edit_task' task.pk %}">Edit</a>
-        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Back to dashboard</a>
-      </div>
-    </section>
-
-    <section class="card card--earth">
-      <h2>Notes</h2>
-      {% if task.notes %}
-        <p>{{ task.notes }}</p>
-      {% else %}
-        <p class="meta">No notes.</p>
-      {% endif %}
-    </section>
+      </span>
+    </div>
   </div>
+</section>
+
+<section class="grid-2 task-detail-grid">
+  <article class="card">
+    <div class="snapshot-header">
+      <h2>Task snapshot</h2>
+
+      <div class="snapshot-header-actions">
+        <a href="{% url 'edit_task' task.pk %}" class="btn btn-primary snapshot-edit-btn">Edit</a>
+
+        <form method="post" action="{% url 'toggle_task_complete' task.pk %}" class="inline-form">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary snapshot-complete-btn">
+            {% if task.completed %}Mark as open{% else %}Mark complete{% endif %}
+          </button>
+        </form>
+        <a href="{% url 'delete_task' task.pk %}" class="btn btn-secondary">Delete task</a>
+      </div>
+    </div>
+
+    <div class="detail-list">
+      <div class="detail-row">
+        <span class="detail-label">Category</span>
+        <span class="detail-value">
+          {% if task.category %}{{ task.category.name }}{% else %}Uncategorized{% endif %}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Status</span>
+        <span class="detail-value">
+          {% if task.completed %}Completed{% else %}In progress{% endif %}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Due</span>
+        <span class="detail-value">
+          {% if task.due_date %}{{ task.due_date|date:"F j, Y" }}{% else %}Not set{% endif %}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Started</span>
+        <span class="detail-value">
+          {% if task.start_at %}{{ task.start_at|date:"F j, Y, g:i A" }}{% else %}Not recorded{% endif %}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Ended</span>
+        <span class="detail-value">
+          {% if task.end_at %}{{ task.end_at|date:"F j, Y, g:i A" }}{% else %}Not recorded{% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="snapshot-notes">
+      <h3>Notes</h3>
+      {% if task.notes %}
+        <div class="notes-content">{{ task.notes|linebreaks }}</div>
+      {% else %}
+        <p class="subtext">No notes added yet.</p>
+      {% endif %}
+    </div>
+  </article>
+
+  <article class="card card--feature">
+    <h2>Task insight</h2>
+
+    <div class="detail-list">
+      <div class="detail-row">
+        <span class="detail-label">Estimated time</span>
+        <span class="detail-value">{{ task.estimated_display }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Actual time</span>
+        <span class="detail-value">{{ task.actual_display }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Planning difference</span>
+        <span class="detail-value">{{ task.planning_difference_display }}</span>
+      </div>
+    </div>
+
+    <div class="insight-panel">
+      <h3>What this suggests</h3>
+
+      <p class="subtext">AI generated insights will appear here | *future enhancement* </p>
+    </div>
+  </article>
+</section>
 {% endblock %}

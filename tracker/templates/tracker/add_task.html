@@ -1,88 +1,162 @@
+{# tracker/templates/tracker/add_task.html #}
 {% extends "tracker/base.html" %}
-{% block title %}Add Task • Task Tracker{% endblock %}
-{% block nav_add_task %}aria-current="page"{% endblock %}
-{% block nav_calendar %}aria-current="page"{% endblock %}
+
+{% block title %}Add task • Cadence{% endblock %}
 
 {% block content %}
-  <div class="hero">
-    <h1 class="page-title">Add Task</h1>
-    <p class="subtext">Create a new task. Category, due date, and time tracking are optional.</p>
+<section class="hero card card--hero">
+  <div class="stack">
+    <h1 class="page-title">Add task</h1>
+    <p class="subtext">
+      <strong>Title</strong> and <strong>due date</strong> are required. Everything else is optional.
+    </p>
   </div>
+</section>
 
-  <section class="card card--wildflower">
-    <h2>Task Details</h2>
+<form method="post" class="stack">
+  {% csrf_token %}
 
-    <form class="form" method="post" novalidate>
-      {% csrf_token %}
+  {# ✅ Always show a clear summary when anything fails validation #}
+  {% if form.errors %}
+    <section class="card">
+      <div class="form-errors">
+        Please fix the highlighted fields below and try again.
+      </div>
+    </section>
+  {% endif %}
 
-      {% if form.non_field_errors %}
-        <div class="meta">{{ form.non_field_errors }}</div>
-      {% endif %}
+  {% if form.non_field_errors %}
+    <section class="card">
+      <div class="form-errors">
+        {{ form.non_field_errors }}
+      </div>
+    </section>
+  {% endif %}
 
-      <div class="field">
-        {{ form.title.label_tag }}
-        {{ form.title }}
-        {% if form.title.errors %}<div class="meta">{{ form.title.errors }}</div>{% endif %}
+  <section class="grid-2">
+    <article class="card">
+      <div class="card-header-row">
+        <h2>Basics</h2>
+        <p class="subtext">
+          Adding a lot at once?
+          <a href="{% url 'import_tasks' %}">Import tasks from Excel.</a>
+        </p>
       </div>
 
-      <div class="grid-2">
-        <div class="field">
+
+      <div class="form-grid">
+        <div class="form-field">
+          {{ form.title.label_tag }}
+          {{ form.title }}
+          {% if form.title.errors %}
+            <div class="form-errors">{{ form.title.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-field">
           {{ form.due_date.label_tag }}
           {{ form.due_date }}
-          {% if form.due_date.errors %}<div class="meta">{{ form.due_date.errors }}</div>{% endif %}
+          {% if form.due_date.errors %}
+            <div class="form-errors">{{ form.due_date.errors }}</div>
+          {% endif %}
         </div>
 
-        <div class="field">
+        <div class="form-field">
           {{ form.category.label_tag }}
           {{ form.category }}
-          {% if form.category.errors %}<div class="meta">{{ form.category.errors }}</div>{% endif %}
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="field">
-          {{ form.start_at.label_tag }}
-          {{ form.start_at }}
-          {% if form.start_at.errors %}<div class="meta">{{ form.start_at.errors }}</div>{% endif %}
+          <p class="subtext">Optional — leave blank if you’re unsure.</p>
+          {% if form.category.errors %}
+            <div class="form-errors">{{ form.category.errors }}</div>
+          {% endif %}
         </div>
 
-        <div class="field">
-          {{ form.end_at.label_tag }}
-          {{ form.end_at }}
-          {% if form.end_at.errors %}<div class="meta">{{ form.end_at.errors }}</div>{% endif %}
+        <div class="form-field form-field--checkbox">
+          {{ form.completed }}
+          {{ form.completed.label_tag }}
+          {% if form.completed.errors %}
+            <div class="form-errors">{{ form.completed.errors }}</div>
+          {% endif %}
         </div>
       </div>
+    </article>
 
-      <div class="grid-2">
-        <div class="field">
-          {{ form.estimated_hours.label_tag }}
-          {{ form.estimated_hours }}
-          {% if form.estimated_hours.errors %}<div class="meta">{{ form.estimated_hours.errors }}</div>{% endif %}
+    <article class="card">
+      <details
+        class="details"
+        {% if form.estimated_hours.errors or form.estimated_minutes_part.errors or form.start_at.errors or form.end_at.errors %}
+          open
+        {% endif %}
+      >
+        <summary class="details__summary">
+          <span>
+            <strong>Planning & timing</strong>
+            <span class="subtext">Optional — expand to add estimates and actual time</span>
+          </span>
+        </summary>
+
+        <div class="details__content">
+          <div class="form-grid">
+            <div class="grid-2">
+              <div class="form-field">
+                {{ form.estimated_hours.label_tag }}
+                {{ form.estimated_hours }}
+                {% if form.estimated_hours.errors %}
+                  <div class="form-errors">{{ form.estimated_hours.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="form-field">
+                {{ form.estimated_minutes_part.label_tag }}
+                {{ form.estimated_minutes_part }}
+                {% if form.estimated_minutes_part.errors %}
+                  <div class="form-errors">{{ form.estimated_minutes_part.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="form-field">
+              {{ form.start_at.label_tag }}
+              {{ form.start_at }}
+              {% if form.start_at.errors %}
+                <div class="form-errors">{{ form.start_at.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-field">
+              {{ form.end_at.label_tag }}
+              {{ form.end_at }}
+              {% if form.end_at.errors %}
+                <div class="form-errors">{{ form.end_at.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <p class="subtext">
+            Tip: Estimates and timing unlock better planning insights later — add what you can.
+          </p>
         </div>
-
-        <div class="field">
-          {{ form.estimated_minutes_part.label_tag }}
-          {{ form.estimated_minutes_part }}
-          {% if form.estimated_minutes_part.errors %}<div class="meta">{{ form.estimated_minutes_part.errors }}</div>{% endif %}
-        </div>
-        <a class="btn btn-secondary" href="{% url 'import_tasks' %}">Import CSV</a>
-      </div>
-
-      <div class="field">
-        {{ form.notes.label_tag }}
-        {{ form.notes }}
-        {% if form.notes.errors %}<div class="meta">{{ form.notes.errors }}</div>{% endif %}
-      </div>
-
-      <div class="inline">
-        {{ form.completed }}
-        {{ form.completed.label_tag }}
-      </div>
-
-      <div class="inline" style="margin-top: 12px;">
-        <button class="btn btn-primary" type="submit">Save task</button>
-        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
-      </div>
-    </form>
+      </details>
+    </article>
   </section>
+
+  <section class="card">
+    <h2>Notes (optional)</h2>
+    <div class="form-field">
+      {{ form.notes.label_tag }}
+      {{ form.notes }}
+      <p class="subtext">Add context you’ll want later (interruptions, energy, blockers).</p>
+      {% if form.notes.errors %}
+        <div class="form-errors">{{ form.notes.errors }}</div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="button-row">
+      <button type="submit" class="btn btn-primary">Save task</button>
+      <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+      <a href="{% url 'categories' %}" class="btn btn-secondary">Manage categories</a>
+    </div>
+  </section>
+</form>
 {% endblock %}

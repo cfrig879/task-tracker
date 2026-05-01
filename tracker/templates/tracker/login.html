@@ -1,0 +1,45 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Sign in • Cadence{% endblock %}
+
+{% block content %}
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
+    <h1 class="page-title">Sign in</h1>
+    <p class="subtext">Welcome back. Continue to your dashboard.</p>
+  </div>
+</section>
+
+<section class="card card--feature">
+  <div class="stack">
+    {% if form.errors %}
+      <div class="message message-error">
+        {{ form.non_field_errors }}
+        {{ form.username.errors }}
+        {{ form.password.errors }}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}" class="form-grid">
+      {% csrf_token %}
+
+      <input type="hidden" name="next" value="{{ next }}">
+
+      <div class="form-field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div class="form-field">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+      </div>
+
+      <div class="button-row">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+        <a class="btn btn-neutral" href="{% url 'signup' %}">Create account</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

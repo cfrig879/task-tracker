@@ -1,0 +1,175 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}All entries • Cadence{% endblock %}
+
+{% block nav_task_list %}aria-current="page"{% endblock %}
+
+{% block content %}
+<section class="hero card card--hero">
+  <div class="stack stack--tight">
+    <h1 class="page-title">All entries</h1>
+    <p class="subtext">Browse, sort, and review your full task history.</p>
+  </div>
+</section>
+
+<section class="card">
+  <form method="get" class="filters-row">
+    <input
+      type="text"
+      name="search"
+      value="{{ search }}"
+      placeholder="Search title"
+    >
+
+    <select name="status">
+      <option value="">All statuses</option>
+
+      {% if status == "open" %}
+        <option value="open" selected>Open</option>
+      {% else %}
+        <option value="open">Open</option>
+      {% endif %}
+
+      {% if status == "completed" %}
+        <option value="completed" selected>Completed</option>
+      {% else %}
+        <option value="completed">Completed</option>
+      {% endif %}
+    </select>
+
+    <select name="category">
+      <option value="">All categories</option>
+      {% for category in categories %}
+        {% if category_id == category.id|stringformat:"s" %}
+          <option value="{{ category.id }}" selected>{{ category.name }}</option>
+        {% else %}
+          <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+
+    <select name="sort">
+      {% if sort == "-updated_at" or not sort %}
+        <option value="-updated_at" selected>Recently updated</option>
+      {% else %}
+        <option value="-updated_at">Recently updated</option>
+      {% endif %}
+
+      {% if sort == "due_date" %}
+        <option value="due_date" selected>Due date ↑</option>
+      {% else %}
+        <option value="due_date">Due date ↑</option>
+      {% endif %}
+
+      {% if sort == "-due_date" %}
+        <option value="-due_date" selected>Due date ↓</option>
+      {% else %}
+        <option value="-due_date">Due date ↓</option>
+      {% endif %}
+
+      {% if sort == "title" %}
+        <option value="title" selected>Title A-Z</option>
+      {% else %}
+        <option value="title">Title A-Z</option>
+      {% endif %}
+
+      {% if sort == "-title" %}
+        <option value="-title" selected>Title Z-A</option>
+      {% else %}
+        <option value="-title">Title Z-A</option>
+      {% endif %}
+
+      {% if sort == "status" %}
+        <option value="status" selected>Open first</option>
+      {% else %}
+        <option value="status">Open first</option>
+      {% endif %}
+
+      {% if sort == "-status" %}
+        <option value="-status" selected>Completed first</option>
+      {% else %}
+        <option value="-status">Completed first</option>
+      {% endif %}
+    </select>
+
+    <button type="submit" class="btn btn-primary">Apply</button>
+  </form>
+</section>
+
+<section class="card">
+  <div class="table-wrap">
+    <table class="data-table task-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Due</th>
+          <th>Started</th>
+          <th>Ended</th>
+          <th>Estimated</th>
+          <th>Actual</th>
+          <th>Difference</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+          <tr>
+            <td data-label="Title">
+              <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+            </td>
+
+            <td data-label="Category">
+              {% if task.category %}
+                {{ task.category.name }}
+              {% else %}
+                Uncategorized
+              {% endif %}
+            </td>
+
+            <td data-label="Status">
+              {% if task.completed %}
+                Completed
+              {% else %}
+                In progress
+              {% endif %}
+            </td>
+
+            <td data-label="Due">
+              {% if task.due_date %}
+                {{ task.due_date|date:"M j, Y" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+
+            <td data-label="Started">
+              {% if task.start_at %}
+                {{ task.start_at|date:"M j, Y g:i A" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+
+            <td data-label="Ended">
+              {% if task.end_at %}
+                {{ task.end_at|date:"M j, Y g:i A" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+
+            <td data-label="Estimated">{{ task.estimated_display }}</td>
+            <td data-label="Actual">{{ task.actual_display }}</td>
+            <td data-label="Difference">{{ task.planning_difference_display }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="9">No tasks match your current filters.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

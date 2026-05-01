@@ -1,88 +1,111 @@
+{# tracker/templates/tracker/edit_task.html #}
 {% extends "tracker/base.html" %}
-{% block title %}Edit Task • Task Tracker{% endblock %}
-{% block nav_dashboard %}aria-current="page"{% endblock %}
+
+{% block title %}Edit {{ task.title }} • Task Tracker{% endblock %}
 
 {% block content %}
-  <div class="hero">
-    <h1 class="page-title">Edit Task</h1>
-    <p class="subtext">Update details for: <strong>{{ task.title }}</strong></p>
+<section class="hero card card--hero">
+  <div class="stack">
+    <h1 class="page-title">Edit task</h1>
+    <p class="subtext">
+      Update the task details, timing, and notes in one place.
+    </p>
   </div>
+</section>
 
-  <section class="card card--wildflower">
-    <h2>Task Details</h2>
+<form method="post" class="stack">
+  {% csrf_token %}
 
-    <form class="form" method="post" novalidate>
-      {% csrf_token %}
-
-      {% if form.non_field_errors %}
-        <div class="meta">{{ form.non_field_errors }}</div>
-      {% endif %}
-
-      <div class="field">
-        {{ form.title.label_tag }}
-        {{ form.title }}
-        {% if form.title.errors %}<div class="meta">{{ form.title.errors }}</div>{% endif %}
+  {% if form.non_field_errors %}
+    <section class="card">
+      <div class="form-errors">
+        {{ form.non_field_errors }}
       </div>
+    </section>
+  {% endif %}
 
-      <div class="grid-2">
-        <div class="field">
-          {{ form.due_date.label_tag }}
-          {{ form.due_date }}
-          {% if form.due_date.errors %}<div class="meta">{{ form.due_date.errors }}</div>{% endif %}
+  <section class="grid-2">
+    <article class="card">
+      <h2>Overview</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          {{ form.title.label_tag }}
+          {{ form.title }}
+          {{ form.title.errors }}
         </div>
 
-        <div class="field">
+        <div class="form-field">
           {{ form.category.label_tag }}
           {{ form.category }}
-          {% if form.category.errors %}<div class="meta">{{ form.category.errors }}</div>{% endif %}
+          {{ form.category.errors }}
+        </div>
+
+        <div class="form-field">
+          {{ form.due_date.label_tag }}
+          {{ form.due_date }}
+          {{ form.due_date.errors }}
+        </div>
+
+        <div class="form-field form-field--checkbox">
+          {{ form.completed }}
+          {{ form.completed.label_tag }}
+          {{ form.completed.errors }}
         </div>
       </div>
+    </article>
 
-      {% if form.start_at %}
-      <div class="grid-2">
-        <div class="field">
-          {{ form.start_at.label_tag }}
-          {{ form.start_at }}
-          {% if form.start_at.errors %}<div class="meta">{{ form.start_at.errors }}</div>{% endif %}
-        </div>
-
-        <div class="field">
-          {{ form.end_at.label_tag }}
-          {{ form.end_at }}
-          {% if form.end_at.errors %}<div class="meta">{{ form.end_at.errors }}</div>{% endif %}
-        </div>
-      </div>
-      {% endif %}
-
-      <div class="grid-2">
-        <div class="field">
+    <article class="card">
+      <h2>Planning & timing</h2>
+      <div class="form-grid">
+        <div class="form-field">
           {{ form.estimated_hours.label_tag }}
           {{ form.estimated_hours }}
-          {% if form.estimated_hours.errors %}<div class="meta">{{ form.estimated_hours.errors }}</div>{% endif %}
+          {{ form.estimated_hours.errors }}
         </div>
 
-        <div class="field">
+        <div class="form-field">
           {{ form.estimated_minutes_part.label_tag }}
           {{ form.estimated_minutes_part }}
-          {% if form.estimated_minutes_part.errors %}<div class="meta">{{ form.estimated_minutes_part.errors }}</div>{% endif %}
+          {{ form.estimated_minutes_part.errors }}
+        </div>
+
+        <div class="form-field">
+          {{ form.start_at.label_tag }}
+          {{ form.start_at }}
+          {{ form.start_at.errors }}
+        </div>
+
+        <div class="form-field">
+          {{ form.end_at.label_tag }}
+          {{ form.end_at }}
+          {{ form.end_at.errors }}
         </div>
       </div>
-
-      <div class="field">
-        {{ form.notes.label_tag }}
-        {{ form.notes }}
-        {% if form.notes.errors %}<div class="meta">{{ form.notes.errors }}</div>{% endif %}
-      </div>
-
-      <div class="inline">
-        {{ form.completed }}
-        {{ form.completed.label_tag }}
-      </div>
-
-      <div class="inline" style="margin-top: 12px;">
-        <button class="btn btn-primary" type="submit">Save changes</button>
-        <a class="btn btn-secondary" href="{{ task.get_absolute_url }}">Cancel</a>
-      </div>
-    </form>
+    </article>
   </section>
+
+  <section class="card">
+    <h2>Notes</h2>
+    <div class="form-field">
+      {{ form.notes.label_tag }}
+      {{ form.notes }}
+      {{ form.notes.errors }}
+    </div>
+  </section>
+
+  <section class="card card--feature">
+    <h2>Why this helps</h2>
+    <p class="subtext">
+      More complete timing and estimate data helps the app identify patterns between your plans and what actually happens.
+    </p>
+  </section>
+
+  <section class="card">
+    <div class="button-row">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <a href="{{ task.get_absolute_url }}" class="btn btn-secondary">Cancel</a>
+      <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to dashboard</a>
+    </div>
+  </section>
+</form>
 {% endblock %}
